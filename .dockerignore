@@ -1,0 +1,11 @@
+*.pyc
+*.pyo
+*.mo
+*.db
+myvenv
+nonroot.Dockerfile
+Jenkinsfile
+docker-compose.yml
+README.md
+.gitignore
+LICENSE

@@ -1,0 +1,9 @@
+version: "1"
+
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: nonroot.Dockerfile
+    # .env variables?
+    # volume for static files?
