@@ -1,6 +1,21 @@
 version: '3'
 
 services:
+  system-storage:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/var/lib/minio/data
+    # environment:
+  auth:
+    image: jboss/keycloak
+    ports:
+      - "8080:8080"
+    depends_on:
+      - system-storage
+    # environment:
   fastapi-app:
     restart: always
     build:
@@ -19,3 +34,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+
+volumes:
+  minio_data:
+      driver: local

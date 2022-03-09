@@ -1,26 +1,20 @@
-from typing import Optional
-from fastapi import FastAPI
+import json
+import logging
+from typing import Optional, Dict
 
-from minio import Minio
-from minio.error import S3Error
-import os
+import jwt
+import requests
+from fastapi import FastAPI
+from fastapi.security.utils import get_authorization_scheme_param
+from starlette.requests import Request
+from starlette.responses import RedirectResponse
+
+from . import minio, keycloak
+
+logger = logging.getLogger(__name__)
+logger.setLevel("DEBUG")
 
 app = FastAPI()
-
-# Create a client with the MinIO server playground, its access key
-# and secret key.
-client = Minio(
-    str(os.getenv("MIN_IO_SERVER", default="localhost")),
-    access_key=os.getenv("MIN_IO_ACCESS_KEY"),
-    secret_key=os.getenv("MIN_IO_SECRET_KEY")
-)
-# Make 'asiatrip' bucket if not exist.
-bucket = os.getenv("MIN_IO_BUCKET_NAME")
-found = client.bucket_exists(bucket)
-if not found:
-    client.make_bucket(bucket)
-else:
-    print(f"Bucket {bucket} already exists")
 
 @app.get("/")
 def read_root():
@@ -42,20 +36,40 @@ async def read_reference_letter_request(reference_letter_request_id: int, q: Opt
 async def read_file(file_path: str):
     return {"file_path": file_path}
 
-@app.get("/test-minio")
+@app.get("/test_minio")
 async def test_minio():
-    try:
-        # Upload '/home/user/Photos/asiaphotos.zip' as object name
-        # 'asiaphotos-2015.zip' to bucket 'asiatrip'.
-        client.fput_object(
-            bucket, "test-09-03-2022.zip", "../README.md",
-        )
-        print(
-            f"'README.md' is successfully uploaded as "
-            "object 'test-09-03-2022.zip' to bucket {bucket}."
-        )
-        message = "Success!"
-    except S3Error as exc:
-        message = f"error occurred. {exc}"
-        print(message)
-    return {"message": message}
+    return minio.test()
+
+@app.get("/test_keycloak/login")
+async def test_keycloak_login() -> RedirectResponse:
+    return RedirectResponse(keycloak.AUTH_URL)
+
+@app.get("/test_keycloak/auth")
+async def test_keycloak_auth() -> RedirectResponse:
+    payload = (
+        f"grant_type=authorization_code&code={code}"
+        f"&redirect_uri={keycloak.APP_BASE_URL}&client_id={keycloak.CLIENT_ID}"
+    )
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
+    token_response = requests.request(
+        "POST", keycloak.TOKEN_URL, data=payload, headers=headers
+    )
+
+    token_body = json.loads(token_response.content)
+    access_token = token_body["access_token"]
+
+    response = RedirectResponse(url="/")
+    response.set_cookie("Authorization", value=f"Bearer {access_token}")
+    return response
+
+@app.get("/")
+async def root(request: Request,) -> Dict:
+    authorization: str = request.cookies.get("Authorization")
+    scheme, credentials = get_authorization_scheme_param(authorization)
+
+    decoded = jwt.decode(
+        credentials, verify=False
+    )  # TODO input keycloak public key as key, disable option to verify aud
+    logger.debug(decoded)
+
+    return {"message": "You're logged in!"}
