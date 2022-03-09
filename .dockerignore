@@ -7,5 +7,6 @@ nonroot.Dockerfile
 Jenkinsfile
 docker-compose.yml
 README.md
+node_modules
+.git
 .gitignore
-LICENSE

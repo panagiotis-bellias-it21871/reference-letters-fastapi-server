@@ -1,9 +1,21 @@
-version: "1"
+version: '3'
 
 services:
-  fastapi:
+  fastapi-app:
+    restart: always
     build:
       context: .
       dockerfile: nonroot.Dockerfile
-    # .env variables?
-    # volume for static files?
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./assets/nginx.http.config:/etc/nginx/nginx.conf
+      # - ./assets/nginx.https.config:/etc/nginx/nginx.conf
+      # - ./assets/certs:/etc/nginx/certs
+    ports:
+      - "80:80"
+      - "443:443"
