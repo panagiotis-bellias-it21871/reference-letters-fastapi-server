@@ -30,6 +30,7 @@ lazy-object-proxy==1.4.3
 Jinja2==3.0.3
 MarkupSafe==2.1.0
 mccabe==0.6.1
+minio
 more-itertools==8.2.0
 orjson==3.6.7
 packaging==20.3
