@@ -4,12 +4,14 @@ from typing import Optional, Dict
 
 import jwt
 import requests
-from fastapi import FastAPI
+from fastapi import FastAPI, Path, Query
 from fastapi.security.utils import get_authorization_scheme_param
 from starlette.requests import Request
 from starlette.responses import RedirectResponse
 
-from . import minio, keycloak
+import minio_functions
+import keycloak_functions
+from models import ReferenceLetterRequest
 
 logger = logging.getLogger(__name__)
 logger.setLevel("DEBUG")
@@ -25,12 +27,24 @@ async def read_user_me():
     return {"user_id": "the current user"}
 
 @app.get("/users/{user_id}")
-async def read_user(user_id: str):
+async def read_user(user_id: str = Path(..., title="The ID of the user to get")):
     return {"user_id": user_id}
 
 @app.get("/reference_letter_requests/{reference_letter_request_id}")
-async def read_reference_letter_request(reference_letter_request_id: int, q: Optional[str] = None):
+async def read_reference_letter_request(
+    reference_letter_request_id: int = Path(..., title="The ID of the reference letter request to get"),
+    q: Optional[str] = Query(None, alias="reference-letter-request-query"),
+    ):
     return {"reference_letter_request_id": reference_letter_request_id, "q": q}
+
+@app.post("/reference_letter_requests/")
+async def create_reference_letter_request(referenceLetterRequest: ReferenceLetterRequest):
+    referenceLetterRequest_dict = referenceLetterRequest.dict()
+    return referenceLetterRequest_dict
+
+@app.put("/reference_letter_requests/{reference_letter_request_id}")
+async def update_reference_letter_request(reference_letter_request_id: int, referenceLetterRequest: ReferenceLetterRequest):
+    return {"reference_letter_request_id": reference_letter_request_id, **referenceLetterRequest.dict()}
 
 @app.get("/grading_files/{file_path:path}")
 async def read_file(file_path: str):
