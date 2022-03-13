@@ -52,21 +52,21 @@ async def read_file(file_path: str):
 
 @app.get("/test_minio")
 async def test_minio():
-    return minio.test()
+    return minio_functions.test()
 
 @app.get("/test_keycloak/login")
 async def test_keycloak_login() -> RedirectResponse:
-    return RedirectResponse(keycloak.AUTH_URL)
+    return RedirectResponse(keycloak_functions.AUTH_URL)
 
 @app.get("/test_keycloak/auth")
 async def test_keycloak_auth() -> RedirectResponse:
     payload = (
-        f"grant_type=authorization_code&code={code}"
-        f"&redirect_uri={keycloak.APP_BASE_URL}&client_id={keycloak.CLIENT_ID}"
+        f"grant_type=authorization_code&code=code"
+        f"&redirect_uri={keycloak_functions.APP_BASE_URL}&client_id={keycloak_functions.CLIENT_ID}"
     )
     headers = {"Content-Type": "application/x-www-form-urlencoded"}
     token_response = requests.request(
-        "POST", keycloak.TOKEN_URL, data=payload, headers=headers
+        "POST", keycloak_functions.TOKEN_URL, data=payload, headers=headers
     )
 
     token_body = json.loads(token_response.content)
