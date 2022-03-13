@@ -1,7 +1,40 @@
 version: '3'
 
 services:
-  fastapi-app:
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: testkeycloakdb
+      POSTGRES_USER: testkeycloakuser
+      POSTGRES_PASSWORD: testkeycloakpassword
+    restart:
+      always
+  
+  keycloak:
+    image: jboss/keycloak:16.0.1   
+    volumes:
+      - ./realm-export.json:/opt/jboss/keycloak/imports/realm-export.json
+    command:
+      - "-b 0.0.0.0 -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: testkeycloakdb
+      DB_USER: testkeycloakuser
+      DB_SCHEMA: public
+      DB_PASSWORD: testkeycloakpassword
+      KEYCLOAK_USER: keycloakuser
+      KEYCLOAK_PASSWORD: keycloakpassword
+      PROXY_ADDRESS_FORWARDING: "true"
+      KEYCLOAK_LOGLEVEL: DEBUG
+    ports:
+      - '8085:8080'
+    depends_on:
+      - postgres
+    restart:
+      always
+  
+  fastapi:
     restart: always
     build:
       context: .
@@ -10,6 +43,9 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    depends_on:
+      - keycloak
+
   nginx:
     image: nginx:latest
     volumes:
@@ -19,3 +55,5 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    depends_on:
+      - fastapi
