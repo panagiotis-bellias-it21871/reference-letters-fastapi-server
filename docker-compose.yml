@@ -1,8 +1,11 @@
 version: '3'
-
+# all services here: postgres, keycloak, minio, fastapi, vuejs, nginx
 services:
   postgres:
     image: postgres
+    volumes:
+      - './assets/postgres/init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql'
+      - 'userrepodb_data:/var/lib/postgresql/data/'
     environment:
       POSTGRES_DB: testkeycloakdb
       POSTGRES_USER: testkeycloakuser
