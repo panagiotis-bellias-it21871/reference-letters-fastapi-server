@@ -3,13 +3,15 @@ from fastapi.responses import RedirectResponse
 from fastapi_keycloak import FastAPIKeycloak, OIDCUser
 from main import app
 
+import env_store as env
+
 idp = FastAPIKeycloak(
-    server_url=os.getenv("KEYCLOAK_SERVER_URL"), 
-    client_id=os.getenv("KEYCLOAK_CLIENT_ID"),
-    client_secret=os.getenv("KEYCLOAK_CLIENT_SECRET"), 
-    admin_client_secret=os.getenv("KEYCLOAK_ADMIN_CLIENT_SECRET"),
-    realm=os.getenv("KEYCLOAK_REALM"),
-    callback_uri=os.getenv("KEYCLOAK_CALLBACK_URI")
+    server_url=env.server_url, 
+    client_id=env.client_id,
+    client_secret=env.client_secret, 
+    admin_client_secret=env.admin_client_secret,
+    realm=env.realm,
+    callback_uri=env.callback_uri
 )
 idp.add_swagger_config(app)
 

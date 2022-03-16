@@ -1,3 +1,4 @@
+alembic
 anyio==3.5.0
 asgiref==3.5.0
 astroid==2.3.3
@@ -13,6 +14,7 @@ databases==0.2.6
 dnspython==2.2.0
 email-validator==1.0.5
 fastapi
+fastapi-sqlalchemy
 fastapi_keycloak
 fastapi-users==0.8.0
 h11
