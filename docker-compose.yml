@@ -1,62 +1,29 @@
-version: '3'
-# all services here: postgres, keycloak, minio, fastapi, vuejs, nginx
+version: "2"
+
 services:
   postgres:
     image: postgres
-    volumes:
-      - './assets/postgres/init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql'
-      - 'userrepodb_data:/var/lib/postgresql/data/'
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
     environment:
-      POSTGRES_DB: testkeycloakdb
-      POSTGRES_USER: testkeycloakuser
-      POSTGRES_PASSWORD: testkeycloakpassword
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - FASTAPI_DB_USER=bellias
+      - FASTAPI_DB_PASS=pass123
+      - FASTAPI_DB_NAME=reference_letters_data
+      - KEYCLOAK_DB_USER=testkeycloakuser
+      - KEYCLOAK_DB_PASS=testkeycloakpassword
+      - KEYCLOAK_DB_NAME=testkeycloakdb
+    volumes:
+      - ./assets/init_db:/docker-entrypoint-initdb.d/
+      - dj_postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5432:5432
     restart:
       always
-  
-  keycloak:
-    image: jboss/keycloak:16.0.1   
-    volumes:
-      - ./realm-export.json:/opt/jboss/keycloak/imports/realm-export.json
-    command:
-      - "-b 0.0.0.0 -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
-    environment:
-      DB_VENDOR: POSTGRES
-      DB_ADDR: postgres
-      DB_DATABASE: testkeycloakdb
-      DB_USER: testkeycloakuser
-      DB_SCHEMA: public
-      DB_PASSWORD: testkeycloakpassword
-      KEYCLOAK_USER: keycloakuser
-      KEYCLOAK_PASSWORD: keycloakpassword
-      PROXY_ADDRESS_FORWARDING: "true"
-      KEYCLOAK_LOGLEVEL: DEBUG
-    ports:
-      - '8085:8080'
-    depends_on:
-      - postgres
-    restart:
-      always
-  
-  fastapi:
-    restart: always
-    build:
-      context: .
-      dockerfile: nonroot.Dockerfile
-    ports:
-      - "8000:8000"
-    env_file:
-      - .env
-    depends_on:
-      - keycloak
 
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./assets/nginx.http.config:/etc/nginx/nginx.conf
-      # - ./assets/nginx.https.config:/etc/nginx/nginx.conf
-      # - ./assets/certs:/etc/nginx/certs
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - fastapi
+volumes:
+  dj_postgres_data:
