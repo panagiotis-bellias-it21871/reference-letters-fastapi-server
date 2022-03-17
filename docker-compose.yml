@@ -18,7 +18,7 @@ services:
       - KEYCLOAK_DB_PASS=testkeycloakpassword
       - KEYCLOAK_DB_NAME=testkeycloakdb
     volumes:
-      - ./assets/init_db:/docker-entrypoint-initdb.d/
+      - ./src/assets/init_db:/docker-entrypoint-initdb.d/
       - dj_postgres_data:/var/lib/postgresql/data/
     ports:
       - 5432:5432

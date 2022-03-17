@@ -1,7 +1,7 @@
 from fastapi import Depends
 from fastapi.responses import RedirectResponse
 from fastapi_keycloak import FastAPIKeycloak, OIDCUser
-from main import app
+from main import server_app
 
 import env_store as env
 
@@ -13,7 +13,7 @@ idp = FastAPIKeycloak(
     realm=env.realm,
     callback_uri=env.callback_uri
 )
-idp.add_swagger_config(app)
+idp.add_swagger_config(server_app)
 
 def current_users(user: OIDCUser = Depends(idp.get_current_user())):
     return user

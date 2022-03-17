@@ -1,7 +1,8 @@
 from minio import Minio
 from minio.error import S3Error
 
-import os, env_store as env
+import os
+import env_store as env
 
 def init():
     # Create a client with the MinIO server playground, its access key

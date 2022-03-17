@@ -16,13 +16,13 @@ email-validator==1.0.5
 fastapi
 fastapi-sqlalchemy
 fastapi_keycloak
-fastapi-users==0.8.0
+fastapi-users
 h11
 h2==3.2.0
 hpack==3.0.0
 hstspreload==2020.3.31
 httptools==0.2.0
-httpx==0.11.1
+httpx
 httpx-oauth==0.2.1
 hyperframe==5.2.0
 idna

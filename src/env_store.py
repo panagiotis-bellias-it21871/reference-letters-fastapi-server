@@ -1,3 +1,5 @@
+import os
+
 # Postgres
 db_url=os.getenv("DATABASE_URL")
 
