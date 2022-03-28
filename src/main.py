@@ -1,5 +1,8 @@
+from fastapi import FastAPI
+
+from fastapi import Path, Query
+
 from typing import Optional
-from fastapi import FastAPI, Path, Query
 from fastapi_sqlalchemy import DBSessionMiddleware, db
 
 from schemas import ReferenceLetterRequest as SchemaReferenceLetterRequest

@@ -6,7 +6,7 @@ An application about reference letter handling in the context of DIT HUA Thesis 
 python3 -m venv myvenv
 source myvenv/bin/activate
 pip install -r requirements.txt
-cd app
+cd src
 uvicorn main:app --reload
 ```
 
