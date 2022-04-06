@@ -39,6 +39,7 @@ orjson==3.6.7
 packaging==20.3
 passlib==1.7.2
 pluggy==0.13.1
+pre-commit
 psycopg2-binary==2.9.3
 py==1.8.1
 pycparser==2.20
