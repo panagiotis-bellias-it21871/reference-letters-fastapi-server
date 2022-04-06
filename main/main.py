@@ -4,11 +4,11 @@ from fastapi import Depends
 from fastapi import FastAPI
 from sqlalchemy.orm import Session
 
-import cruds
-import models
-import schemas
-from database import engine
-from database import SessionLocal
+from . import cruds
+from . import models
+from . import schemas
+from .database import engine
+from .database import SessionLocal
 
 '''
 from fastapi import Path, Query
@@ -43,7 +43,7 @@ def get_db():
 
 @app.post("/rl_requests/", response_model=schemas.ReferenceLetterRequest)
 def create_rl_request(rl_request: schemas.ReferenceLetterRequestCreate, db: Session = Depends(get_db)):
-    return crud.create_rl_request(db, rl_request)
+    return cruds.create_rl_request(db, rl_request)
 
 '''
 # to avoid csrftokenError
