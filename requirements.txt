@@ -15,8 +15,8 @@ dnspython==2.2.0
 email-validator==1.0.5
 fastapi
 fastapi-sqlalchemy
-fastapi_keycloak
 fastapi-users
+fastapi_keycloak
 h11
 h2==3.2.0
 hpack==3.0.0
@@ -29,8 +29,8 @@ idna
 importlib-metadata==1.6.0
 isort==4.3.21
 itsdangerous==2.1.0
-lazy-object-proxy==1.4.3
 Jinja2==3.0.3
+lazy-object-proxy==1.4.3
 MarkupSafe==2.1.0
 mccabe==0.6.1
 minio
@@ -39,7 +39,6 @@ orjson==3.6.7
 packaging==20.3
 passlib==1.7.2
 pluggy==0.13.1
-pre-commit
 psycopg2-binary==2.9.3
 py==1.8.1
 pycparser==2.20
