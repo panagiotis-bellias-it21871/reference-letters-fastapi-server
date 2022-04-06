@@ -1,8 +1,18 @@
-from fastapi import FastAPI
+from typing import List #, Optional
 
+from fastapi import Depends
+from fastapi import FastAPI
+from sqlalchemy.orm import Session
+
+import cruds
+import models
+import schemas
+from database import engine
+from database import SessionLocal
+
+'''
 from fastapi import Path, Query
 
-from typing import Optional
 from fastapi_sqlalchemy import DBSessionMiddleware, db
 
 from schemas import ReferenceLetterRequest as SchemaReferenceLetterRequest
@@ -17,9 +27,25 @@ from models import Teacher as ModelTeacher
 import env_store as env
 import minio_api, keycloak_api
 from models import ReferenceLetterRequest, Student, Teacher
+'''
 
-server_app = FastAPI()
+app = FastAPI()
 
+models.Base.metadata.create_all(bind=engine)
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.post("/rl_requests/", response_model=schemas.ReferenceLetterRequest)
+def create_rl_request(rl_request: schemas.ReferenceLetterRequestCreate, db: Session = Depends(get_db)):
+    return crud.create_rl_request(db, rl_request)
+
+'''
 # to avoid csrftokenError
 server_app.add_middleware(DBSessionMiddleware, db_url=env.db_url)
 
@@ -152,3 +178,4 @@ async def read_user_me():
 @server_app.get("/users/{user_id}")
 async def read_user(user_id: str = Path(..., title="The ID of the user to get")):
     return {"user_id": user_id}
+'''
