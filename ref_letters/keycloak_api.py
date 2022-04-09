@@ -1,7 +1,7 @@
 from fastapi import Depends
 from fastapi.responses import RedirectResponse
 from fastapi_keycloak import FastAPIKeycloak, OIDCUser
-from main import server_app
+from ref_letters import server_app
 
 import env_store as env
 

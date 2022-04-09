@@ -30,7 +30,7 @@ after you have created a database using [pgAdmin](https://www.youtube.com/watch?
 
 ### Run application server
 ```bash
-cd src
+cd ref_letters
 uvicorn main:app --reload
 ```
 
