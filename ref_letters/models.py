@@ -1,36 +1,41 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
-from .database import Base
+from sqlmodel import SQLModel, Field
 
-class ReferenceLetterRequest(Base):
-    __tablename__ = 'reference_letter_requests'
-    id = Column(Integer, primary_key=True, index=True)
-    name: Column(String)
-    description: Column(String)
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
-    time_updated = Column(DateTime(timezone=True), onupdate=func.now())
-    student_id = Column(Integer, ForeignKey('student.id'))
-    teacher_id = Column(Integer, ForeignKey('teacher.id'))
+class ReferenceLetterRequestBase(SQLModel):
+    name: str
+    description: str
+    # time_created
+    # time_updated
+    student_id: int
+    teacher_id: int
 
-    student = relationship('Student')
-    teacher = relationship('Teacher')
+class ReferenceLetterRequest(ReferenceLetterRequestBase, table=True):
+    id: int = Field(default=None, primary_key=True)
 
-class Student(Base):
-    __tablename__ = 'student'
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    email = Column(String)
-    school_id = Column(Integer)
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
-    time_updated = Column(DateTime(timezone=True), onupdate=func.now())
+class ReferenceLetterRequestCreate(ReferenceLetterRequestBase):
+    pass
 
-class Teacher(Base):
-    __tablename__ = 'teacher'
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    email = Column(String)
-    degree = Column(String)
-    time_created = Column(DateTime(timezone=True), server_default=func.now())
-    time_updated = Column(DateTime(timezone=True), onupdate=func.now())
+class StudentBase(SQLModel):
+    name: str
+    email: str
+    school_id: int
+    # time_created
+    # time_updated
+
+class Student(StudentBase, table=True):
+    id: int = Field(default=None, primary_key=True)
+
+class StudentCreate(StudentBase):
+    pass
+
+class TeacherBase(SQLModel):
+    name: str
+    email: str
+    degree: str
+    # time_created
+    # time_updated
+
+class Teacher(TeacherBase):
+    id: int = Field(default=None, primary_key=True)
+
+class TeacherCreate(TeacherBase):
+    pass
