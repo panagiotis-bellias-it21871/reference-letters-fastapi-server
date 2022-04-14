@@ -13,10 +13,10 @@ services:
     env_file:
       - ref_letters/.env
     depends_on:
-      postgres_db:
-        condition: service_healthy
-      keycloak_auth:
-        condition: service_healthy
+      - postgres_db:
+          condition: service_healthy
+      - keycloak_auth:
+          condition: service_healthy
   
   postgres_db:
     image: postgres:14
