@@ -26,6 +26,5 @@ RUN chown -R appuser:appuser /usr/data
 USER appuser:appuser
 
 EXPOSE 8000/tcp
-EXPOSE 80/tcp
 # Tell what to do when it starts as a container
-CMD ["uvicorn","ref_letters.main:app","--host","0.0.0.0","--port","80"]
+CMD ["uvicorn","ref_letters.main:app","--host","0.0.0.0","--port","8000"]
