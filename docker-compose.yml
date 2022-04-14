@@ -13,10 +13,8 @@ services:
     env_file:
       - ref_letters/.env
     depends_on:
-      - postgres_db:
-          - condition: service_healthy
-      - keycloak_auth:
-          - condition: service_healthy
+      - postgres_db
+    #  - keycloak_auth
   
   postgres_db:
     image: postgres:14
@@ -44,23 +42,23 @@ services:
     restart:
       always
 
-  keycloak:
-    image: quay.io/keycloak/keycloak:legacy
-    environment:
-      DB_VENDOR: POSTGRES
-      DB_ADDR: postgres
-      DB_DATABASE: testkeycloakdb
-      DB_USER: testkeycloakuser
-      DB_SCHEMA: public
-      DB_PASSWORD: testkeycloakpassword
-      KEYCLOAK_USER: keycloakuser
-      KEYCLOAK_PASSWORD: keycloakpassword
-    ports:
-      - 8085:8080
-    depends_on:
-      - postgres
-    restart:
-      always
+  # keycloak_auth:
+  #   image: quay.io/keycloak/keycloak:legacy
+  #   environment:
+  #     DB_VENDOR: POSTGRES
+  #     DB_ADDR: postgres
+  #     DB_DATABASE: testkeycloakdb
+  #     DB_USER: testkeycloakuser
+  #     DB_SCHEMA: public
+  #     DB_PASSWORD: testkeycloakpassword
+  #     KEYCLOAK_USER: keycloakuser
+  #     KEYCLOAK_PASSWORD: keycloakpassword
+  #   ports:
+  #     - 8085:8080
+  #   depends_on:
+  #     - postgres
+  #   restart:
+  #     always
 
 volumes:
   dj_postgres_data:
