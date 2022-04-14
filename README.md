@@ -19,7 +19,7 @@ git clone https://github.com/pan-bellias/Reference-Letters-Server
 python3 -m venv myvenv
 source myvenv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env
+cp ref_letters/.env.example ref_letters/.env
 ```
 
 Edit .env file to define
