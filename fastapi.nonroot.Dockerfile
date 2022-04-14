@@ -7,7 +7,7 @@ WORKDIR /usr/data
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN addgroup -S appuser && adduser -S appuser -G appuser  --home /usr/data
+RUN addgroup appuser && adduser appuser appuser  --home /usr/data
 
 ENV PATH=$PATH:/usr/data/.local/bin
 
