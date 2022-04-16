@@ -4,9 +4,18 @@ from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
+from .config import settings
 
-engine = create_async_engine(DATABASE_URL, echo=True, future=True)
+#DATABASE_URL = settings.database_url
+#print(DATABASE_URL)
+
+#DATABASE_URL = "sqlite:///./test.db"
+
+#engine = create_async_engine(DATABASE_URL, echo=True, future=True)
+engine = create_async_engine(
+        "sqlite+aiosqlite:///:test:",
+        echo=True,
+    )
 
 async def init_db():
     async with engine.begin() as conn:

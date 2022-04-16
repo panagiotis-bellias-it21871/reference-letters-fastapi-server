@@ -1,7 +1,7 @@
-import email
 from fastapi import Depends, FastAPI
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from typing import List
 
 from ref_letters.database import get_session, init_db
 from ref_letters.models import ReferenceLetterRequest, ReferenceLetterRequestCreate, Student, StudentCreate, Teacher, TeacherCreate
@@ -16,7 +16,7 @@ async def on_startup():
 async def pong():
     return {"ping": "pong!"}
 
-@app.get("/rl_requests", response_model=list[ReferenceLetterRequest])
+@app.get("/rl_requests", response_model=List[ReferenceLetterRequest])
 async def get_rl_requests(session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(ReferenceLetterRequest))
     rl_requests = result.scalars().all()
@@ -30,7 +30,7 @@ async def add_rl_request(rl_request: ReferenceLetterRequestCreate, session: Asyn
     await session.refresh(rl_request)
     return rl_request
 
-@app.get("/students", response_model=list[Student])
+@app.get("/students", response_model=List[Student])
 async def get_students(session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(Student))
     students = result.scalars().all()
@@ -44,7 +44,7 @@ async def add_student(student: StudentCreate, session: AsyncSession = Depends(ge
     await session.refresh(student)
     return student
 
-@app.get("/teachers", response_model=list[Teacher])
+@app.get("/teachers", response_model=List[Teacher])
 async def get_teachers(session: AsyncSession = Depends(get_session)):
     result = await session.execute(select(Teacher))
     teachers = result.scalars().all()

@@ -34,7 +34,7 @@ class TeacherBase(SQLModel):
     # time_created
     # time_updated
 
-class Teacher(TeacherBase):
+class Teacher(TeacherBase, table=True):
     id: int = Field(default=None, primary_key=True)
 
 class TeacherCreate(TeacherBase):
