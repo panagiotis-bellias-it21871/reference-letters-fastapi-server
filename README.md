@@ -137,3 +137,11 @@ docker network inspect reference-letters-network
 docker network connect reference-letters-network reference-letters-server-nginx-1
 docker network connect reference-letters-network reference-letters-frontend-app
 ```
+
+# Docker Images - GitHub Container Registry
+```bash
+# build image
+docker build . -t ghcr.io/pan-bellias/ref-letters-server:latest -f fastapi.nonroot.Dockerfile
+# push image
+docker push ghcr.io/pan-bellias/ref-letters-server:latest
+```
