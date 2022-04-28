@@ -4,7 +4,7 @@ from sqlmodel import SQLModel
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
-from config import settings
+from .config import settings
 
 #DATABASE_URL = settings.database_url
 #print(DATABASE_URL)
@@ -13,7 +13,7 @@ from config import settings
 
 #engine = create_async_engine(DATABASE_URL, echo=True, future=True)
 engine = create_async_engine(
-        "sqlite+aiosqlite:///:test:",
+        "sqlite+aiosqlite:///sql.db",
         echo=True,
     )
 

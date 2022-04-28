@@ -16,8 +16,8 @@ An application about reference letter handling in the context of DIT HUA Thesis 
 ### Clone and initialize project
 ```bash
 git clone https://github.com/pan-bellias/Reference-Letters-Server
-python3 -m venv myvenv
-source myvenv/bin/activate
+virtualenv fvenv -p python3.X
+source fvenv/bin/activate
 pip install -r requirements.txt
 cp ref_letters/.env.example ref_letters/.env
 ```
