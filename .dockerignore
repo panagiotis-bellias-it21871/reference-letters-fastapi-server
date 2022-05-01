@@ -4,7 +4,7 @@
 *.db
 assets/
 k8s/
-myvenv
+fvenv
 fastapi.nonroot.Dockerfile
 Jenkinsfile
 docker-compose.yml
