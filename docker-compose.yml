@@ -1,22 +1,7 @@
 version: '3'
 
 services:
-  fastapi:
-    build:
-      context: .
-      dockerfile: fastapi.nonroot.Dockerfile
-    # command: uvicorn ref_letters.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
-    ports:
-      - "8000:8000"
-      - "80:80"
-    volumes:
-      - ./ref_letters:/usr/data/app
-    env_file:
-      - ref_letters/.env
-    depends_on:
-      - postgres_db
-      - keycloak_auth
-  
+
   postgres_db:
     image: postgres:14
     expose:
@@ -60,6 +45,22 @@ services:
       - postgres
     restart:
       always
-
+  
+  fastapi:
+    build:
+      context: .
+      dockerfile: fastapi.nonroot.Dockerfile
+    # command: uvicorn ref_letters.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+      - "80:80"
+    volumes:
+      - ./ref_letters:/usr/data/app
+    env_file:
+      - ref_letters/.env
+    depends_on:
+      - postgres_db
+      - keycloak_auth
+  
 volumes:
   dj_postgres_data:
