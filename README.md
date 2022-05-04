@@ -22,8 +22,6 @@ An application about reference letter handling in the context of DIT HUA Thesis 
 <a name="locally"></a>
 ## Run Project Locally (Installation)
 
-#### maybe we want a different way in fastapi
-
 ### Clone and initialize project
 ```bash
 git clone https://github.com/pan-bellias/Reference-Letters-Server
@@ -136,16 +134,16 @@ In order to be able to use Ansible for automation, there is the [ansible-referen
 
 <a name="docker"></a>
 ### Deployment with Docker and docker-compose using Ansible
-In order to deploy our project in Docker environment, we use again the [ansible-reference-letter-project]() where we use a playbook that uses an Ansible role to run the application
+In order to deploy our project in Docker environment, we use again the [ansible-reference-letter-project](https://github.com/pan-bellias/Ansible-Reference-Letter-Code.git) where we use a playbook that uses an Ansible role to run the application
 with docker-compose according to the [docker-compose.yml](docker-compose.yml). In that file, we have defined three
-services, the postgres container with its volume in order to be able to store data, the fastapi container for our
+services, the postgres container with its volume in order to be able to store data, the keycloak container (information is missing) and the fastapi container for our
 app taking environmental variables from local .env file (it's ready when we run the playbook from jenkins-server
 where the sensitive values from environmental variables are parametric). The fastapi container is built according
 to the [nonroot.Dockerfile](nonroot.Dockerfile) as a nonroot process for safety reasons.
 
-* [More Info Here](https://github.com/pan-bellias/ansible-reference-letter#ansible--docker)
+* [More Info Here](https://github.com/pan-bellias/Ansible-Reference-Letter-Code#ansible--docker)
 
-## Docker Network
+#### Docker Network
 ```bash
 docker network create reference-letters-network
 docker network inspect reference-letters-network
@@ -153,7 +151,7 @@ docker network connect reference-letters-network reference-letters-server-nginx-
 docker network connect reference-letters-network reference-letters-frontend-app
 ```
 
-# Docker Images - GitHub Container Registry
+#### Docker Images - GitHub Container Registry
 ```bash
 # build image
 docker build . -t ghcr.io/pan-bellias/ref-letters-server:latest -f fastapi.nonroot.Dockerfile
