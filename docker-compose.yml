@@ -50,6 +50,7 @@ services:
     build:
       context: .
       dockerfile: fastapi.nonroot.Dockerfile
+    # command: cp ref_letters/.env.example ref_letters/.env
     # command: uvicorn ref_letters.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
