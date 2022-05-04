@@ -9,7 +9,15 @@ An application about reference letter handling in the context of DIT HUA Thesis 
 <a href="https://git-scm.com/" target="_blank"> <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/> </a> <a href="https://www.w3.org/html/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/> </a> <a href="https://www.jenkins.io" target="_blank"> <img src="https://www.vectorlogo.zone/logos/jenkins/jenkins-icon.svg" alt="jenkins" width="40" height="40"/> </a> <a href="https://kubernetes.io" target="_blank"> <img src="https://www.vectorlogo.zone/logos/kubernetes/kubernetes-icon.svg" alt="kubernetes" width="40" height="40"/> </a> <a href="https://www.linux.org/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/linux/linux-original.svg" alt="linux" width="40" height="40"/> </a> <a href="https://www.nginx.com" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nginx/nginx-original.svg" alt="nginx" width="40" height="40"/> </a> <a href="https://www.postgresql.org" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original-wordmark.svg" alt="postgresql" width="40" height="40"/> </a> <a href="https://www.python.org" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/> </a>
 </p>
 
-1. [Run Project Locally (Installation)](#locally)
+<a name="contents"></a>
+## Table Of Contents
+1. [Table Of Contents](#contents)
+2. [Run Project Locally (Installation)](#locally)
+3. [Deploy fastapi project to a VM (Virtual Machine)](#deployment)
+3.1. [CI/CD tool configuration (Jenkins Server)](#jenkins)
+3.2. [Deployment with pure Ansible](#ansible)
+3.3. [Deployment with Docker and docker-compose using Ansible](#docker)
+...
 
 <a name="locally"></a>
 ## Run Project Locally (Installation)
@@ -39,6 +47,7 @@ uvicorn main:app --reload
 
 [See what you have done](http://127.0.0.1:8080/)
 
+<a name="deployment"></a>
 ## Deploy fastapi project to a VM (Virtual Machine)
 
 We are going to need 4 VMs. One for the jenkins server and one for each execution environment (ansible, docker and
@@ -49,6 +58,7 @@ kubernetes)
 * [SSH Automation](https://linuxize.com/post/using-the-ssh-config-file/)
 * [Reserve Static IP in Azure](https://azure.microsoft.com/en-au/resources/videos/azure-friday-how-to-reserve-a-public-ip-range-in-azure-using-public-ip-prefix/)
 
+<a name="jenkins"></a>
 ### CI/CD tool configuration (Jenkins Server)
 
 * [Install Jenkins](https://www.jenkins.io/doc/book/installing/linux/)
@@ -116,6 +126,7 @@ services.
 Secrets and ConfigMaps could be just prepared from earlier. This is applied to the https ingress, we will see
 later in [SSL configuration](https://github.com/pan-bellias/Reference-Letters-Service#in-kubernetes-environment)
 
+<a name="ansible"></a>
 ### Deployment with pure Ansible
 In order to be able to use Ansible for automation, there is the [ansible-reference-letter-project](
 #### URL!
@@ -123,6 +134,7 @@ In order to be able to use Ansible for automation, there is the [ansible-referen
 
 * [More Details](https://github.com/pan-bellias/ansible-reference-letter-project#pure-ansible)
 
+<a name="docker"></a>
 ### Deployment with Docker and docker-compose using Ansible
 In order to deploy our project in Docker environment, we use again the [ansible-reference-letter-project]() where we use a playbook that uses an Ansible role to run the application
 with docker-compose according to the [docker-compose.yml](docker-compose.yml). In that file, we have defined three
