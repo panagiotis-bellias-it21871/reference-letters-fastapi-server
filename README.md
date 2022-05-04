@@ -11,12 +11,12 @@ An application about reference letter handling in the context of DIT HUA Thesis 
 
 <a name="contents"></a>
 ## Table Of Contents
-1. [Table Of Contents](#contents)
-2. [Run Project Locally (Installation)](#locally)
-3. [Deploy fastapi project to a VM (Virtual Machine)](#deployment)
-3.1. [CI/CD tool configuration (Jenkins Server)](#jenkins)
-3.2. [Deployment with pure Ansible](#ansible)
-3.3. [Deployment with Docker and docker-compose using Ansible](#docker)
+1. [Table Of Contents](#contents)  
+2. [Run Project Locally (Installation)](#locally)  
+3. [Deploy fastapi project to a VM (Virtual Machine)](#deployment)  
+3.1. [CI/CD tool configuration (Jenkins Server)](#jenkins)  
+3.2. [Deployment with pure Ansible](#ansible)  
+3.3. [Deployment with Docker and docker-compose using Ansible](#docker)  
 ...
 
 <a name="locally"></a>
