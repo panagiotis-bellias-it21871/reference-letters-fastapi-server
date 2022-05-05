@@ -15,6 +15,16 @@ An application about reference letter handling in the context of DIT HUA Thesis 
 2. [Run Project Locally (Installation)](#locally)  
 3. [Deploy fastapi project to a VM (Virtual Machine)](#deployment)  
 3.1. [CI/CD tool configuration (Jenkins Server)](#jenkins)  
+3.1.1. [Step 1: Configure Shell](#conf_shell)  
+3.1.2. [Step 2: Add webhooks both to fastapi and ansible repositories](#webhooks)  
+3.1.3. [Step 3: Add the credentials needed](#credentials)  
+3.1.4. [Create Jobs](#jobs)  
+3.1.4.1. [Build stage](#build)  
+3.1.4.2. [Test stage](#test)  
+3.1.4.3. [Ansible Deployment](#j-ansible)  
+3.1.4.4. [Docker Deployment](#j-docker)  
+3.1.4.5. [Preparing k8s Deployment](#j-k8s-pre)  
+3.1.4.6. [Kubernetes Deployment](#j-k8s)  
 3.2. [Deployment with pure Ansible](#ansible)  
 3.3. [Deployment with Docker and docker-compose using Ansible](#docker)  
 ...
@@ -67,14 +77,17 @@ sudo systemctl status jenkins
 netstat -anlp | grep 8080 # needs package net-tools
 ```
 
+<a name="conf_shell"></a>
 #### Step 1: Configure Shell
 Go to Dashboard / Manage Jenkins / Configure System / Shell / Shell Executable and type '/bin/bash'
 
-#### Step 2: Add webhooks both to django and ansible repositories
+<a name="webhooks"></a>
+#### Step 2: Add webhooks both to fastapi and ansible repositories
 [Dublicate](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/duplicating-a-repository) repositories for easier configuration.
 
 * [Add Webhooks - see until Step 4](https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project)
 
+<a name="credentials"></a>
 #### Step 3: Add the credentials needed
 
 * [Add SSH keys & SSH Agent plugin](https://plugins.jenkins.io/ssh-agent/) with id 'ssh-ansible-vm' to access
@@ -87,6 +100,7 @@ need to define in our projects during deployment, like below
 <id>                <value>
 ```
 
+<a name="jobs"></a>
 #### Create Jobs
 * [Create Freestyle project for Ansible code](https://www.guru99.com/create-builds-jenkins-freestyle-project.html)
 * [More for Ansible]() <-- Link for Ansible Project is missing
@@ -95,8 +109,11 @@ need to define in our projects during deployment, like below
 
 In the fastapi job the pipeline will be the [Jenkinsfile](Jenkinsfile)
 
+<a name="build"></a>
 ##### Build stage
 Takes the code from the git repository
+
+<a name="test"></a>
 ##### Test stage
 Activates a virtual environment, installs the requirements, copies the .env.example to use it as .env with some
 demo values for testing and uses pytest so the application can be tested before goes on production.
@@ -104,17 +121,22 @@ NOTE: connect to your jenkins vm and do the below line so the test stage can run
 ```bash
 <username>@<vm-name>:~$ sudo apt-get install libpcap-dev libpq-dev
 ```
+
+<a name="j-ansible"></a>
 ##### Ansible Deployment
 Ansible connects to the ansible-vm through ssh agent and the ssh key we define there and runs a playbook for
 postgres database configuration and fastapi service configuration passing the sensitive parameters from secret texts.
 
+<a name="j-docker"></a>
 ##### Docker Deployment
 Ansible connects to the docker-vm through ssh and runs a playbook that it will define the sensitive parameters and
 will use docker-compose module to do docker-compose up the containers according to [docker-compose.yml](docker-compose.yml)
 
+<a name="j-k8s-pre"></a>
 ##### Preparing k8s Deployment
 Here, to deploy our app we need a docker image updated. So we build the image according to [nonroot.Dockerfile](nonroot.Dockerfile), we are logging in Dockerhub and push the image there to be public available.
 
+<a name="j-k8s"></a>
 ##### Kubernetes Deployment
 After we have [configure connection](https://github.com/pan-bellias/Reference-Letters-Service#connect-kubernetes-cluster-with-local-pc-orand-jenkins-server)
 between jenkins user and our k8s cluster, we update secrets and configmaps using also some Ansible to populate ~/.
