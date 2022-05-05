@@ -96,25 +96,36 @@ ansible-vm, and 'ssh-docker-vm' to access docker-vm
 need to define in our projects during deployment, like below
 
 ```nano
-# ID                What is the value?
-<id>                <value>
+# ID                        What is the value?
+ansible-db-url              <value>
+docker-db-url
+docker-push-secret
+docker-user
+docker-prefix-image-fastapi
+fastapi-db-user
+fastapi-db-passwd
+fastapi-db
+keycloak-db-user
+keycloak-db-passwd
+keycloak-db
+etc.
 ```
 
 <a name="jobs"></a>
 #### Create Jobs
 * [Create Freestyle project for Ansible code](https://www.guru99.com/create-builds-jenkins-freestyle-project.html)
-* [More for Ansible]() <-- Link for Ansible Project is missing
+* [More for Ansible](https://github.com/pan-bellias/Ansible-Reference-Letter-Code.git)
 * [Create Pipeline project](https://www.jenkins.io/doc/pipeline/tour/hello-world/)
 * [Add Webhooks to both jobs - see until Step 9](https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project)
 
 In the fastapi job the pipeline will be the [Jenkinsfile](Jenkinsfile)
 
 <a name="build"></a>
-##### Build stage
+##### Build-Checkout stage
 Takes the code from the git repository
 
 <a name="test"></a>
-##### Test stage
+##### Unit Test stage
 Activates a virtual environment, installs the requirements, copies the .env.example to use it as .env with some
 demo values for testing and uses pytest so the application can be tested before goes on production.
 NOTE: connect to your jenkins vm and do the below line so the test stage can run
@@ -122,10 +133,14 @@ NOTE: connect to your jenkins vm and do the below line so the test stage can run
 <username>@<vm-name>:~$ sudo apt-get install libpcap-dev libpq-dev
 ```
 
+##### E2E Testing
+##### Integration Testing
+##### UI Testing
+
 <a name="j-ansible"></a>
 ##### Ansible Deployment
 Ansible connects to the ansible-vm through ssh agent and the ssh key we define there and runs a playbook for
-postgres database configuration and fastapi service configuration passing the sensitive parameters from secret texts.
+postgres database configuration, keycloak and fastapi service configuration passing the sensitive parameters from secret texts.
 
 <a name="j-docker"></a>
 ##### Docker Deployment
