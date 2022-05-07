@@ -1,6 +1,6 @@
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
-from schemas import User, UserInDB
+from .schemas import User, UserInDB
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
 

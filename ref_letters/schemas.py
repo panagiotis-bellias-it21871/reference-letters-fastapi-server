@@ -3,7 +3,9 @@ from pydantic import BaseModel
 from typing import Optional
 
 # YT1
-fakedb = []
+fakedb_rl_requests = []
+fakedb_students = []
+fakedb_teachers = []
 
 class ReferenceLetterRequest(BaseModel):
     id: int
@@ -11,6 +13,17 @@ class ReferenceLetterRequest(BaseModel):
     is_approved: Optional[bool] = None
     is_declined: Optional[bool] = None
     is_pending: Optional[bool] = None
+
+class Student(BaseModel):
+    id: int
+    name: str
+    school_id: int
+    email: str
+
+class Teacher(BaseModel):
+    id: int
+    name: str
+    email: str
 
 class User(BaseModel):
     username: str

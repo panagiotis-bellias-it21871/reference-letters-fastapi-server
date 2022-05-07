@@ -16,18 +16,20 @@ async def init_db():
         # await conn.run_sync(SQLModel.metadata.drop_all)
         await conn.run_sync(SQLModel.metadata.create_all)
 '''
-import databases
+#import databases
 
 
 # SQLAlchemy specific code, as with any other app
 DATABASE_URL = "sqlite:///./test.db"
 # DATABASE_URL = "postgresql://user:password@postgresserver/db"
 
-database = databases.Database(DATABASE_URL)
+#database = databases.Database(DATABASE_URL)
 
+'''
 async def get_session() -> AsyncSession:
     async_session = sessionmaker(
         engine, class_=AsyncSession, expire_on_commit=False
     )
     async with async_session() as session:
         yield session
+'''
