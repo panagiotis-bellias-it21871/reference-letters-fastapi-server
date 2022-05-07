@@ -1,20 +1,35 @@
 from fastapi import Depends, FastAPI
+
+'''
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 
 from ref_letters.db import get_session, init_db
 from ref_letters.models import ReferenceLetterRequest, ReferenceLetterRequestCreate, Student, StudentCreate, Teacher, TeacherCreate
+'''
+from schemas import User
+from utils import get_current_user
+from db import database
 
 app = FastAPI()
 
 @app.on_event("startup")
 async def on_startup():
-    await init_db()
+    await database.connect()
+    # await init_db()
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
 
 @app.get("/ping")
 async def pong():
     return {"ping": "pong!"}
+
+@app.get("/users/me")
+async def read_users_me(current_user: User = Depends(get_current_user)):
+    return current_user
 
 @app.get("/rl_requests", response_model=List[ReferenceLetterRequest])
 async def get_rl_requests(session: AsyncSession = Depends(get_session)):
