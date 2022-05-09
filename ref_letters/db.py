@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 
 load_dotenv(verbose=True)
 
-#DATABASE_URL = "sqlite:///./dev.db"
 DATABASE_URL = os.getenv("DATABASE_URL", default="")
 metadata = sqlalchemy.MetaData()
 database = databases.Database(DATABASE_URL)
