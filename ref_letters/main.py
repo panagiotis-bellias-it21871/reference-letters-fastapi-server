@@ -7,6 +7,25 @@ from .schemas import ReferenceLetterRequest, Student, Teacher, User
 
 app = FastAPI()
 
+"""
+app.include_router(university_route.router, prefix='/universities',
+                   tags=['Universities'])
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel import select
+
+from typing import Optional, List
+from app.db.base import get_session
+from app.models.dept_models import Department, DepartmentCreate, DepartmentUpdate
+from app.crud.departments_crud import get_all, get_one, create, update, delete
+router = APIRouter()
+
+
+@router.get("/", response_model=List[Department])
+async def get_departments(session: AsyncSession = Depends(get_session)):
+    ret
+"""
+
 @app.on_event("startup")
 async def connect():
     await database.connect()

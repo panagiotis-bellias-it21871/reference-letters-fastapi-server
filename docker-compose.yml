@@ -24,7 +24,7 @@ services:
       retries: 3
     volumes:
       - 'dj_postgres_data:/var/lib/postgresql/data/'
-      #- './ref_letters/assets/init_db:/docker-entrypoint-initdb.d/'
+      - './ref_letters/assets/init_db:/docker-entrypoint-initdb.d/'
     restart:
       always
 
@@ -45,7 +45,7 @@ services:
       - postgres_db
     restart:
       always
-  
+
   fastapi:
     build:
       context: .
@@ -64,6 +64,6 @@ services:
     depends_on:
       - postgres_db
       - keycloak_auth
-  
+
 volumes:
   dj_postgres_data:
