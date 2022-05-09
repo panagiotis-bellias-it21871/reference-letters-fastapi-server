@@ -1,7 +1,12 @@
 import databases
 import sqlalchemy
+import os
+from dotenv import load_dotenv
 
-DATABASE_URL = "sqlite:///./dev.db"
+load_dotenv(verbose=True)
+
+#DATABASE_URL = "sqlite:///./dev.db"
+DATABASE_URL = os.getenv("DATABASE_URL", default="")
 metadata = sqlalchemy.MetaData()
 database = databases.Database(DATABASE_URL)
 reference_letter_request_db = sqlalchemy.Table(
