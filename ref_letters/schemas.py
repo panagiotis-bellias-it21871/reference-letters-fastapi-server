@@ -2,11 +2,6 @@ from lib2to3.pgen2.token import OP
 from pydantic import BaseModel
 from typing import Optional
 
-# YT1
-fakedb_rl_requests = []
-fakedb_students = []
-fakedb_teachers = []
-
 class ReferenceLetterRequest(BaseModel):
     id: int
     name: str
