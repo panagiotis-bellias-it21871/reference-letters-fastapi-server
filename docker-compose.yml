@@ -57,10 +57,8 @@ services:
       - "80:80"
     volumes:
       - ./ref_letters:/usr/data/app
-    # env_file:
-    #   - ref_letters/.env
-    environment:
-      - DATABASE_URL=postgresql://bellias:pass123@postgres_db/reference_letters_data
+    env_file:
+      - ref_letters/.env
     depends_on:
       - postgres_db
       - keycloak_auth
