@@ -28,31 +28,29 @@ services:
     restart:
       always
 
-  """
-  keycloak_auth:
-    image: quay.io/keycloak/keycloak:legacy
-    environment:
-      DB_VENDOR: POSTGRES
-      DB_ADDR: postgres
-      DB_DATABASE: testkeycloakdb
-      DB_USER: testkeycloakuser
-      DB_SCHEMA: public
-      DB_PASSWORD: testkeycloakpassword
-      KEYCLOAK_USER: keycloakuser
-      KEYCLOAK_PASSWORD: keycloakpassword
-    ports:
-      - 8085:8080
-    depends_on:
-      - postgres_db
-    restart:
-      always
-  """
+  # keycloak_auth:
+  #   image: quay.io/keycloak/keycloak:legacy
+  #   environment:
+  #     DB_VENDOR: POSTGRES
+  #     DB_ADDR: postgres
+  #     DB_DATABASE: testkeycloakdb
+  #     DB_USER: testkeycloakuser
+  #     DB_SCHEMA: public
+  #     DB_PASSWORD: testkeycloakpassword
+  #     KEYCLOAK_USER: keycloakuser
+  #     KEYCLOAK_PASSWORD: keycloakpassword
+  #   ports:
+  #     - 8085:8080
+  #   depends_on:
+  #     - postgres_db
+  #   restart:
+  #     always
 
   fastapi:
     build:
       context: .
       dockerfile: fastapi.nonroot.Dockerfile
-      # command: uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
     volumes:
