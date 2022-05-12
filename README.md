@@ -43,14 +43,13 @@ cp ref_letters/.env.example ref_letters/.env
 
 Edit .env file to define
 ```vim
-DATABASE_URL=postgresql+asyncpg://<DB-USERNAME>:<DB-PASSWORD>@localhost/<DB-NAME>
+DATABASE_URL=postgresql://<DB-USERNAME>:<DB-PASSWORD>@localhost:5432/<DB-NAME>
 ```
 after you have created a database using [pgAdmin](https://www.youtube.com/watch?v=1wvDVBjNDys)
 
 ### Run application server
 ```bash
-cd ref_letters
-uvicorn main:app --reload
+uvicorn ref_letters.main:app --reload
 ```
 
 [See what you have done](http://127.0.0.1:8080/)
@@ -163,11 +162,9 @@ later in [SSL configuration](https://github.com/pan-bellias/Reference-Letters-Se
 
 <a name="ansible"></a>
 ### Deployment with pure Ansible
-In order to be able to use Ansible for automation, there is the [ansible-reference-letter-project](
-#### URL!
-). There is installation and usage guide.
+In order to be able to use Ansible for automation, there is the [ansible-reference-letter-project](https://github.com/pan-bellias/Ansible-Reference-Letter-Code.git). There is installation and usage guide.
 
-* [More Details](https://github.com/pan-bellias/ansible-reference-letter-project#pure-ansible)
+* [More Details](https://github.com/pan-bellias/Ansible-Reference-Letter-Code#pure-ansible)
 
 <a name="docker"></a>
 ### Deployment with Docker and docker-compose using Ansible
@@ -184,14 +181,18 @@ to the [nonroot.Dockerfile](nonroot.Dockerfile) as a nonroot process for safety 
 ```bash
 docker network create reference-letters-network
 docker network inspect reference-letters-network
-docker network connect reference-letters-network reference-letters-server-nginx-1
-docker network connect reference-letters-network reference-letters-frontend-app
+docker network connect reference-letters-network reference-letters-server_fastapi_1
+docker network connect reference-letters-network reference-letters-frontend-app # we will see that
 ```
 
 #### Docker Images - GitHub Container Registry
+
+* [Link for Info](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+
 ```bash
 # build image
 docker build . -t ghcr.io/pan-bellias/ref-letters-server:latest -f fastapi.nonroot.Dockerfile
 # push image
 docker push ghcr.io/pan-bellias/ref-letters-server:latest
 ```
+
