@@ -27,4 +27,4 @@ USER appuser:appuser
 
 EXPOSE 8000/tcp
 # Tell what to do when it starts as a container
-CMD ["uvicorn","ref_letters.main:app","--host","0.0.0.0","--port","8000"]
+CMD ["uvicorn","main:app","--host","0.0.0.0","--port","8000"]

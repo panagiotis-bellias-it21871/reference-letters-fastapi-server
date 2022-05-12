@@ -28,6 +28,7 @@ services:
     restart:
       always
 
+  """
   keycloak_auth:
     image: quay.io/keycloak/keycloak:legacy
     environment:
@@ -45,23 +46,22 @@ services:
       - postgres_db
     restart:
       always
+  """
 
   fastapi:
     build:
       context: .
       dockerfile: fastapi.nonroot.Dockerfile
-    # command: cp ref_letters/.env.example ref_letters/.env
-    # command: uvicorn ref_letters.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+      # command: uvicorn main:app --reload --workers 1 --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
-      - "80:80"
     volumes:
       - ./ref_letters:/usr/data/app
     env_file:
       - ref_letters/.env
     depends_on:
       - postgres_db
-      - keycloak_auth
+      # - keycloak_auth
 
 volumes:
   dj_postgres_data:
