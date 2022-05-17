@@ -1,4 +1,5 @@
 from fastapi import Depends, FastAPI, Form
+from fastapi.middleware.cors import CORSMiddleware
 
 from .utils import get_current_user
 from .db import database, reference_letter_request_db, student_db, teacher_db
@@ -25,6 +26,21 @@ router = APIRouter()
 async def get_departments(session: AsyncSession = Depends(get_session)):
     ret
 """
+
+import os
+from dotenv import load_dotenv
+
+load_dotenv(verbose=True)
+
+origins = os.getenv("ORIGINS", default=["http://127.0.0.1:8000"])
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 async def connect():
