@@ -28,23 +28,29 @@ services:
     restart:
       always
 
-  # keycloak_auth:
-  #   image: quay.io/keycloak/keycloak:legacy
-  #   environment:
-  #     DB_VENDOR: POSTGRES
-  #     DB_ADDR: postgres
-  #     DB_DATABASE: testkeycloakdb
-  #     DB_USER: testkeycloakuser
-  #     DB_SCHEMA: public
-  #     DB_PASSWORD: testkeycloakpassword
-  #     KEYCLOAK_USER: keycloakuser
-  #     KEYCLOAK_PASSWORD: keycloakpassword
-  #   ports:
-  #     - 8085:8080
-  #   depends_on:
-  #     - postgres_db
-  #   restart:
-  #     always
+  keycloak_auth:
+    image: jboss/keycloak:16.1.0
+    volumes:
+      - ./realm-export.json:/opt/jboss/keycloak/imports/realm-export.json
+    command: 
+      - "-b 0.0.0.0 -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: testkeycloakdb
+      DB_USER: testkeycloakuser
+      DB_SCHEMA: public
+      DB_PASSWORD: testkeycloakpassword
+      KEYCLOAK_USER: keycloakuser
+      KEYCLOAK_PASSWORD: keycloakpassword
+      PROXY_ADDRESS_FORWARDING: "true"
+      KEYCLOAK_LOGLEVEL: DEBUG
+    ports:
+      - '8085:8080'
+    depends_on:
+      - postgres_db
+    restart:
+      always
 
   fastapi:
     build:

@@ -1,12 +1,13 @@
+import os
+from dotenv import load_dotenv
+
 from fastapi import Depends, FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_keycloak import FastAPIKeycloak, OIDCUser
 
-from .utils import get_current_user
 from .db import database, reference_letter_request_db, student_db, teacher_db
 
 from .schemas import ReferenceLetterRequest, Student, Teacher, User
-
-app = FastAPI()
 
 """
 app.include_router(university_route.router, prefix='/universities',
@@ -27,12 +28,11 @@ async def get_departments(session: AsyncSession = Depends(get_session)):
     ret
 """
 
-import os
-from dotenv import load_dotenv
-
 load_dotenv(verbose=True)
 
 origins = os.getenv("ORIGINS", default=["http://127.0.0.1:8000"])
+
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,6 +41,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+idp = FastAPIKeycloak(
+    server_url=os.getenv("KC_SERVER_URL", default=""),
+    client_id=os.getenv("KC_CLIENT_URL", default="some-client"),
+    client_secret=os.getenv("KC_CLIENT_SECRET", default="some-client-secret"),
+    admin_client_secret=os.getenv("KC_ADMIN_CLIENT_SECRET", default="admin-cli-secret"),
+    realm=os.getenv("KC_REALM", default="some-realm-name"),
+    callback_uri=os.getenv("KC_CALLBACK_URI", default="http://localhost:8081/callback")
+)
+idp.add_swagger_config(app)
 
 @app.on_event("startup")
 async def connect():
@@ -54,13 +64,17 @@ async def shutdown():
 def read_root():
     return {"greetings": "Welcome to FastAPI Python"}
 
+@app.get("/admin")
+def admin(user: OIDCUser = Depends(idp.get_current_user(required_roles=["admin"]))):
+    return f'Hi premium user{user}'
+
+@app.get("/user/roles")
+def user_roles(user: OIDCUser = Depends(idp.get_current_user)):
+    return f'{user.roles}'
+
 @app.get("/ping")
 async def pong():
     return {"ping": "pong!"}
-
-@app.get("/users/me")
-async def read_users_me(current_user: User = Depends(get_current_user)):
-    return current_user
 
 # YT2
 @app.post("/language/")
