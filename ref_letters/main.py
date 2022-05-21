@@ -9,25 +9,6 @@ from .db import database, reference_letter_request_db, student_db, teacher_db
 
 from .schemas import ReferenceLetterRequest, Student, Teacher, User
 
-"""
-app.include_router(university_route.router, prefix='/universities',
-                   tags=['Universities'])
-from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlmodel import select
-
-from typing import Optional, List
-from app.db.base import get_session
-from app.models.dept_models import Department, DepartmentCreate, DepartmentUpdate
-from app.crud.departments_crud import get_all, get_one, create, update, delete
-router = APIRouter()
-
-
-@router.get("/", response_model=List[Department])
-async def get_departments(session: AsyncSession = Depends(get_session)):
-    ret
-"""
-
 load_dotenv(verbose=True)
 
 origins = os.getenv("ORIGINS", default=["http://127.0.0.1:8000"])
@@ -42,6 +23,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+"""
 idp = FastAPIKeycloak(
     server_url=os.getenv("KC_SERVER_URL", default=""),
     client_id=os.getenv("KC_CLIENT_URL", default="some-client"),
@@ -51,6 +33,7 @@ idp = FastAPIKeycloak(
     callback_uri=os.getenv("KC_CALLBACK_URI", default="http://localhost:8081/callback")
 )
 idp.add_swagger_config(app)
+"""
 
 @app.on_event("startup")
 async def connect():
@@ -64,6 +47,7 @@ async def shutdown():
 def read_root():
     return {"greetings": "Welcome to FastAPI Python"}
 
+"""
 @app.get("/admin")
 def admin(user: OIDCUser = Depends(idp.get_current_user(required_roles=["admin"]))):
     return f'Hi premium user{user}'
@@ -71,6 +55,7 @@ def admin(user: OIDCUser = Depends(idp.get_current_user(required_roles=["admin"]
 @app.get("/user/roles")
 def user_roles(user: OIDCUser = Depends(idp.get_current_user)):
     return f'{user.roles}'
+"""
 
 @app.get("/ping")
 async def pong():
