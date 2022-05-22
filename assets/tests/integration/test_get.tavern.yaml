@@ -3,7 +3,7 @@ test_name: Get some data from the API
 stages:
   - name: Make sure we have the right ID for reference letter requests
     request:
-      url: "{{ backend_url }}"/rl_requests/1
+      url: "{{ BACKEND_URL }}"/rl_requests/1
       method: GET
     response:
       status_code: 200
@@ -18,7 +18,7 @@ stages:
   
   - name: Make sure we have the right ID for students
     request:
-      url: "{{ backend_url }}"/students/1
+      url: "{{ BACKEND_URL }}"/students/1
       method: GET
     response:
       status_code: 200
@@ -33,7 +33,7 @@ stages:
   
   - name: Make sure we have the right ID for teachers
     request:
-      url: "{{ backend_url }}"/teachers/1
+      url: "{{ BACKEND_URL }}"/teachers/1
       method: GET
     response:
       status_code: 200
