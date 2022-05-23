@@ -11,7 +11,7 @@ from .schemas import ReferenceLetterRequest, Student, Teacher, User
 
 load_dotenv(verbose=True)
 
-origins = os.getenv("ORIGINS", default=["http://127.0.0.1:8000"])
+origins = ["*"]
 
 app = FastAPI()
 
