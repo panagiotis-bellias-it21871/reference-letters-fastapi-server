@@ -1,13 +1,21 @@
+'''
+Importing modules needed
+'''
 import databases
 import sqlalchemy
+
 import os
 from dotenv import load_dotenv
 
 load_dotenv(verbose=True)
 
-DATABASE_URL = os.getenv("DATABASE_URL", default="")
+DATABASE_URL = os.getenv("DATABASE_URL", default="")             # Declare database url (e.g. sqlite or postgreSQL)
+
+# Initialize some utility objects for the database connection
 metadata = sqlalchemy.MetaData()
 database = databases.Database(DATABASE_URL)
+
+# Our custom tables
 reference_letter_request_db = sqlalchemy.Table(
     "reference_letter_request",
     metadata,
@@ -35,8 +43,8 @@ teacher_db = sqlalchemy.Table(
     sqlalchemy.Column("email", sqlalchemy.String(750)),
 )
 
+# Initialize db engine to have tables ready at application's startup
 engine = sqlalchemy.create_engine(
     DATABASE_URL
 )
-
 metadata.create_all(engine)
