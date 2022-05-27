@@ -1,12 +1,11 @@
 import os
-from dotenv import load_dotenv
 
+from dotenv import load_dotenv
 from fastapi import Depends, FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi_keycloak import FastAPIKeycloak, OIDCUser
+from keycloak import KeycloakOpenID
 
 from .db import database, reference_letter_request_db, student_db, teacher_db
-
 from .schemas import ReferenceLetterRequest, Student, Teacher, User
 
 load_dotenv(verbose=True)
@@ -23,17 +22,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-"""
-idp = FastAPIKeycloak(
-    server_url=os.getenv("KC_SERVER_URL", default=""),
-    client_id=os.getenv("KC_CLIENT_URL", default="some-client"),
-    client_secret=os.getenv("KC_CLIENT_SECRET", default="some-client-secret"),
-    admin_client_secret=os.getenv("KC_ADMIN_CLIENT_SECRET", default="admin-cli-secret"),
-    realm=os.getenv("KC_REALM", default="some-realm-name"),
-    callback_uri=os.getenv("KC_CALLBACK_URI", default="http://localhost:8081/callback")
-)
-idp.add_swagger_config(app)
-"""
+# Configure client
+keycloak_openid = KeycloakOpenID(server_url=os.getenv("KC_SERVER_URL", default="http://localhost:8080/auth/"),
+                    client_id=os.getenv("KC_CLIENT_ID", default="example_client"),
+                    realm_name=os.getenv("KC_REALM", default="example_realm"),
+                    client_secret_key=os.getenv("KC_CLIENT_SECRET", default="some-client-secret"))
 
 @app.on_event("startup")
 async def connect():
@@ -47,21 +40,68 @@ async def shutdown():
 def read_root():
     return {"greetings": "Welcome to FastAPI Python"}
 
-"""
-@app.get("/admin")
-def admin(user: OIDCUser = Depends(idp.get_current_user(required_roles=["admin"]))):
-    return f'Hi premium user{user}'
+'''
+KeyCloak NoAdmin Integration
+'''
+# Get Token
+token = keycloak_openid.token("user", "password")
 
-@app.get("/user/roles")
-def user_roles(user: OIDCUser = Depends(idp.get_current_user)):
-    return f'{user.roles}'
-"""
+@app.get("/keycloak/test1")
+async def keycloak_values1():
+    # Get WellKnow
+    config_well_known = keycloak_openid.well_known()
+    # Get Token
+    token2 = keycloak_openid.token("user", "password", totp="012345")
+    return [
+        {"config_well_known": config_well_known},
+        {"token1": token},
+        {"token2": token2}
+    ]
+
+@app.get("/keycloak/userinfo")
+async def keycloak_user_info():
+    # Get Userinfo
+    userinfo = keycloak_openid.userinfo(token['access_token'])
+    return userinfo
+
+@app.get("/keycloak/refresh")
+async def keycloak_refresh():
+    # Refresh token
+    token = keycloak_openid.refresh_token(token['refresh_token'])
+    return token
+
+@app.get("/keycloak/logout")
+async def keycloak_logout():
+    # Logout
+    keycloak_openid.logout(token['refresh_token'])
+
+'''
+KeyCloak Admin Integration
+'''
+from keycloak import KeycloakAdmin
+keycloak_admin = KeycloakAdmin(server_url=os.getenv("KC_SERVER_URL", default="http://localhost:8080/auth/"),
+                               username='example-admin',
+                               password='secret',
+                               realm_name=os.getenv("KC_REALM_ADMIN", default="master"),
+                               user_realm_name="only_if_other_realm_than_master",
+                               client_secret_key=os.getenv("KC_CLIENT_SECRET", default="some-client-secret"),
+                               verify=True)
+
+#admin_client_secret=os.getenv("KC_ADMIN_CLIENT_SECRET", default="admin-cli-secret"),
+#callback_uri=os.getenv("KC_CALLBACK_URI", default="http://localhost:8081/callback")
+
+# Add user
+new_user = keycloak_admin.create_user({"email": "example@example.com",
+                    "username": "example@example.com",
+                    "enabled": True,
+                    "firstName": "Example",
+                    "lastName": "Example"})
+# etc.
 
 @app.get("/ping")
 async def pong():
     return {"ping": "pong!"}
 
-# YT2
 @app.post("/language/")
 async def language(name: str = Form(...), type: str = Form(...)):
     return {"name": name, "type": type}
@@ -188,3 +228,13 @@ async def update_teacher(teacher_id: int, teacher: Teacher):
 async def delete_teacher(teacher_id: int):
     query = teacher_db.delete().where(teacher_db.c.id == teacher_id)
     return await database.execute(query)
+
+"""
+@app.get("/admin")
+def admin(user: OIDCUser = Depends(idp.get_current_user(required_roles=["admin"]))):
+    return f'Hi premium user{user}'
+
+@app.get("/user/roles")
+def user_roles(user: OIDCUser = Depends(idp.get_current_user)):
+    return f'{user.roles}'
+"""
