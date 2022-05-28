@@ -1,9 +1,9 @@
-test_name: Get some data from the API
+test_name: Get some data from our REST API
 
 stages:
   - name: Make sure we have the right ID for reference letter requests
     request:
-      url: "{{ BACKEND_URL }}"/rl_requests/1
+      url: http://localhost:8000/rl_requests/1
       method: GET
     response:
       status_code: 200
@@ -18,7 +18,7 @@ stages:
   
   - name: Make sure we have the right ID for students
     request:
-      url: "{{ BACKEND_URL }}"/students/1
+      url: http://localhost:8000/students/1
       method: GET
     response:
       status_code: 200
@@ -33,7 +33,7 @@ stages:
   
   - name: Make sure we have the right ID for teachers
     request:
-      url: "{{ BACKEND_URL }}"/teachers/1
+      url: http://localhost:8000/teachers/1
       method: GET
     response:
       status_code: 200

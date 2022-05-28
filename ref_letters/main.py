@@ -302,7 +302,7 @@ async def keycloak_admin_values():
 """
 
 @app.get("/ping")
-async def pong():
+async def ping():
     return {"ping": "pong!"}
 
 @app.post("/language/")
