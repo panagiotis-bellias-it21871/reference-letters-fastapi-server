@@ -112,6 +112,18 @@
         "disableableCredentialTypes": [],
         "requiredActions": [],
         "notBefore": 0
+      },
+      {
+        "id": "5484sdsd-d66s-4ds8-s4d4-d849sfd54ss9",
+        "createdTimestamp": 1654955194984,
+        "username": "user",
+        "enabled": true,
+        "totp": "012345",
+        "emailVerified": false,
+        "serviceAccountClientId": "test-client",
+        "disableableCredentialTypes": [],
+        "requiredActions": [],
+        "notBefore": 0
       }
     ],
     "scopeMappings": [
