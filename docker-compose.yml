@@ -66,6 +66,19 @@ services:
     depends_on:
       - postgres_db
       # - keycloak_auth
+  
+  vuejs:
+    build:
+      context: .
+      dockerfile: Reference-Letters-Client/Dockerfile
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    env_file:
+      - Reference-Letters-Client/.env
+    ports:
+      - "80:80"
+      # - '443:443'
 
 volumes:
   dj_postgres_data:
