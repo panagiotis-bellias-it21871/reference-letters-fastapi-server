@@ -1,0 +1,4 @@
+[submodule "Reference-Letters-Client"]
+	path = Reference-Letters-Client
+	url = git@github.com:pan-bellias/Reference-Letters-Client.git
+	branch = master
