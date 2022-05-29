@@ -1,0 +1,24 @@
+test_name: Create some data to the API
+
+stages:
+  - name: Create a new reference letter request
+    request:
+      url: http://localhost:8000/rl_requests/
+      method: POST
+      json:
+        id: 1
+        name: "New Reference Letter Request"
+        is_approved: false
+        is_declined: false
+        is_pending: true
+    response:
+      status_code: 200
+      json:
+        id: 1
+        name: "New Reference Letter Request"
+        is_approved: false
+        is_declined: false
+        is_pending: true
+      save:
+        json:
+          returned_id: id
