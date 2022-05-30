@@ -3,6 +3,7 @@ version: '3'
 services:
 
   postgres_db:
+    container_name: rl_server_postgres_db
     image: postgres:14
     expose:
       - 5432
@@ -29,6 +30,7 @@ services:
       always
 
   keycloak_auth:
+    container_name: rl_security_keycloak_auth
     image: jboss/keycloak:16.1.0
     volumes:
       - ./realm-export.json:/opt/jboss/keycloak/imports/realm-export.json
@@ -53,6 +55,7 @@ services:
       always
 
   fastapi:
+    container_name: rl_server_fastapi_app
     build:
       context: .
       dockerfile: fastapi.nonroot.Dockerfile
@@ -68,6 +71,7 @@ services:
       # - keycloak_auth
   
   vuejs:
+    container_name: rl_client_vuejs_app
     build:
       context: .
       dockerfile: Reference-Letters-Client/Dockerfile
@@ -79,6 +83,9 @@ services:
     ports:
       - "80:80"
       # - '443:443'
+    depends_on:
+      - fastapi
+      # - keycloak_auth
 
 volumes:
   dj_postgres_data:
