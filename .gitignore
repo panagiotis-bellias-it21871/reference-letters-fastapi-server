@@ -134,3 +134,4 @@ dmypy.json
 .pyre/
 docker-compose-notes.txt
 .pre-commit-config.yaml
+*:Zone.Identifier

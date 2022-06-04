@@ -32,10 +32,10 @@ services:
   keycloak_auth:
     container_name: rl_security_keycloak_auth
     image: quay.io/keycloak/keycloak:16.1.1
-    # volumes:
-    #   - ./realm-export.json:/opt/jboss/keycloak/imports/realm-export.json
-    # command: 
-    #  - "-b 0.0.0.0 -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+    volumes:
+      - ./realm-export.json:/opt/jboss/keycloak/imports/realm-export.json
+    command: 
+     - "-b 0.0.0.0 -Dkeycloak.profile.feature.upload_scripts=enabled -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
     environment:
       DB_VENDOR: POSTGRES
       DB_ADDR: postgres_db

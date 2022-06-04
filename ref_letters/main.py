@@ -23,13 +23,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-'''
 # Configure client
 keycloak_openid = KeycloakOpenID(server_url=os.getenv("KC_SERVER_URL", default="http://localhost:8080/auth/"),
                     client_id=os.getenv("KC_CLIENT_ID", default="example_client"),
                     realm_name=os.getenv("KC_REALM", default="example_realm"),
                     client_secret_key=os.getenv("KC_CLIENT_SECRET", default="some-client-secret"))
-'''
 
 @app.on_event("startup")
 async def connect():
@@ -43,7 +41,6 @@ async def shutdown():
 def read_root():
     return {"greetings": "Welcome to FastAPI Python"}
 
-"""
 '''
 KeyCloak NoAdmin Integration
 '''
@@ -299,7 +296,6 @@ async def keycloak_admin_values():
         'realm_roles2': realm_roles2,
         'idps': idps
     }
-"""
 
 @app.get("/ping")
 async def ping():
