@@ -68,13 +68,13 @@ services:
       - ref_letters/.env
     depends_on:
       - postgres_db
-      # - keycloak_auth
+      - keycloak_auth
   
   vuejs:
     container_name: rl_client_vuejs_app
     build:
-      context: .
-      dockerfile: Reference-Letters-Client/Dockerfile
+      context: Reference-Letters-Client
+      dockerfile: Dockerfile
     volumes:
       - '.:/app'
       - '/app/node_modules'
@@ -85,7 +85,7 @@ services:
       # - '443:443'
     depends_on:
       - fastapi
-      # - keycloak_auth
+      - keycloak_auth
 
 volumes:
   dj_postgres_data:
