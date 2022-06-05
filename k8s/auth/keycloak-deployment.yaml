@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: keycloak
+  template:
+    metadata:
+      labels:
+        component: keycloak
+    spec:
+      volumes:
+        - name:  kc-persistent-volume-storage
+          persistentVolumeClaim:
+            claimName: kc-pvc-claim
+      containers:
+        - name: keycloak
+          image: "quay.io/keycloak/keycloak:16.1.1"
+          ports:
+            - containerPort: 8080
+	"""
+          env:
+            - name: DB_VENDOR
+              valueFrom:
+                secretKeyRef:
+                  name: pg-user
+                  key: PGUSER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-user
+                  key: PGPASSWORD
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: pg-user
+                  key: PGDATABASE
+          volumeMounts:
+            - name: pg-database-persistent-volume-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+	"""

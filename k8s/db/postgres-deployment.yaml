@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: postgres
+  template:
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      volumes:
+        - name:  pg-database-persistent-volume-storage
+          persistentVolumeClaim:
+            claimName: pg-pvc-claim
+      containers:
+        - name: postgres
+          image: "postgres:14"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-users
+                  key: PGUSER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pg-users
+                  key: PGPASSWORD
+            - name: FASTAPI_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-users
+                  key: FAUSER
+	    - name: FASTAPI_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: pg-users
+                  key: FAPASSWORD
+            - name: FASTAPI_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: pg-users
+                  key: FADBNAME
+            - name: KEYCLOAK_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pg-users
+                  key: KCUSER
+            - name: KEYCLOAK_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: pg-users
+                  key: KCPASSWORD
+            - name: KEYCLOAK_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: pg-users
+                  key: KCDBNAME
+          volumeMounts:
+            - name: pg-database-persistent-volume-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
