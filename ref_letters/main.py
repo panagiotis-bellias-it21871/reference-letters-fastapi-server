@@ -6,7 +6,8 @@ from fastapi import Depends, FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
 from keycloak import KeycloakOpenID
 
-from .db import database, reference_letter_request_db, student_db, teacher_db
+from ref_letters.routers import rl_requests
+from .db import database #, reference_letter_request_db, student_db, teacher_db
 from .schemas import ReferenceLetterRequest, Student, Teacher, User
 
 load_dotenv(verbose=True)
@@ -305,6 +306,7 @@ async def ping():
 async def language(name: str = Form(...), type: str = Form(...)):
     return {"name": name, "type": type}
 
+'''
 @app.get("/rl_requests")
 async def get_rl_requests():
     query = reference_letter_request_db.select()
@@ -347,7 +349,7 @@ async def update_rl_request(rl_request_id: int, rl_request: ReferenceLetterReque
 async def delete_rl_request(rl_request_id: int):
     query = reference_letter_request_db.delete().where(reference_letter_request_db.c.id == rl_request_id)
     return await database.execute(query)
-
+'''
 @app.get("/students")
 async def get_students():
     query = student_db.select()
