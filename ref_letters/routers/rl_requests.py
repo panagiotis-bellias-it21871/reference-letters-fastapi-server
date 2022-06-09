@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from ref_letters.db import database, reference_letter_request_db
-from ref_letters.schemas import ReferenceLetterRequest
+from ..db import database, reference_letter_request_db
+from ..schemas import ReferenceLetterRequest
 
 router = APIRouter()
 

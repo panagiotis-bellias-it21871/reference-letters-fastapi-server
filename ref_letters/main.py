@@ -6,7 +6,7 @@ from fastapi import Depends, FastAPI, Form
 from fastapi.middleware.cors import CORSMiddleware
 from keycloak import KeycloakOpenID
 
-from ref_letters.routers import rl_requests
+from .routers import rl_requests
 from .db import database #, reference_letter_request_db, student_db, teacher_db
 from .schemas import ReferenceLetterRequest, Student, Teacher, User
 
