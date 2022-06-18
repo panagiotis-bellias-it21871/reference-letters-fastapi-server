@@ -4,9 +4,8 @@ A back end web application about reference letter handling in the context of DIT
 <p align="left"> <img src="https://komarev.com/ghpvc/?username=panagiotis-bellias-it21871&label=Profile%20views&color=0e75b6&style=flat" alt="panagiotis-bellias-it21871" /> </p>
 
 <h3 align="left">Languages and Tools:</h3>
-<p align="left"> <a href="https://azure.microsoft.com/en-in/" target="_blank"> <img src="https://www.vectorlogo.zone/logos/microsoft_azure/microsoft_azure-icon.svg" alt="azure" width="40" height="40"/> </a> <a href="https://www.gnu.org/software/bash/" target="_blank"> <img src="https://www.vectorlogo.zone/logos/gnu_bash/gnu_bash-icon.svg" alt="bash" width="40" height="40"/> </a> <a href="https://getbootstrap.com" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bootstrap/bootstrap-plain-wordmark.svg" alt="bootstrap" width="40" height="40"/> </a> <a href="https://www.w3schools.com/css/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original-wordmark.svg" alt="css3" width="40" height="40"/> </a>
-<a href="https://www.docker.com/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original-wordmark.svg" alt="docker" width="40" height="40"/> </a>
-<a href="https://git-scm.com/" target="_blank"> <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/> </a> <a href="https://www.w3.org/html/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/> </a> <a href="https://www.jenkins.io" target="_blank"> <img src="https://www.vectorlogo.zone/logos/jenkins/jenkins-icon.svg" alt="jenkins" width="40" height="40"/> </a> <a href="https://kubernetes.io" target="_blank"> <img src="https://www.vectorlogo.zone/logos/kubernetes/kubernetes-icon.svg" alt="kubernetes" width="40" height="40"/> </a> <a href="https://www.linux.org/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/linux/linux-original.svg" alt="linux" width="40" height="40"/> </a> <a href="https://www.nginx.com" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nginx/nginx-original.svg" alt="nginx" width="40" height="40"/> </a> <a href="https://www.postgresql.org" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original-wordmark.svg" alt="postgresql" width="40" height="40"/> </a> <a href="https://www.python.org" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/> </a>
+<p align="left"> <a href="https://www.docker.com/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original-wordmark.svg" alt="docker" width="40" height="40"/> </a>
+<a href="https://git-scm.com/" target="_blank"> <img src="https://www.vectorlogo.zone/logos/git-scm/git-scm-icon.svg" alt="git" width="40" height="40"/> </a> <a href="https://www.w3.org/html/" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original-wordmark.svg" alt="html5" width="40" height="40"/> </a> <a href="https://www.postgresql.org" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postgresql/postgresql-original-wordmark.svg" alt="postgresql" width="40" height="40"/> </a> <a href="https://www.python.org" target="_blank"> <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" alt="python" width="40" height="40"/> </a>
 </p>
 
 <a name="contents"></a>
@@ -14,19 +13,8 @@ A back end web application about reference letter handling in the context of DIT
 1. [Table Of Contents](#contents)  
 2. [Run Project Locally (Installation)](#locally)  
 3. [Deploy fastapi project to a VM (Virtual Machine)](#deployment)  
-3.1. [CI/CD tool configuration (Jenkins Server)](#jenkins)  
-3.1.1. [Step 1: Configure Shell](#conf_shell)  
-3.1.2. [Step 2: Add webhooks both to fastapi and ansible repositories](#webhooks)  
-3.1.3. [Step 3: Add the credentials needed](#credentials)  
-3.1.4. [Create Jobs](#jobs)  
-3.1.4.1. [Build stage](#build)  
-3.1.4.2. [Test stage](#test)  
-3.1.4.3. [Ansible Deployment](#j-ansible)  
-3.1.4.4. [Docker Deployment](#j-docker)  
-3.1.4.5. [Preparing k8s Deployment](#j-k8s-pre)  
-3.1.4.6. [Kubernetes Deployment](#j-k8s)  
-3.2. [Deployment with pure Ansible](#ansible)  
-3.3. [Deployment with Docker and docker-compose using Ansible](#docker)  
+3.1. [CI/CD tool configuration (Jenkins Server)](#jenkins)
+3.2. [Deployment with Docker and docker-compose using Ansible](#docker)  
 ...
 
 <a name="locally"></a>
@@ -34,18 +22,36 @@ A back end web application about reference letter handling in the context of DIT
 
 ### Clone and initialize project
 ```bash
-git clone https://github.com/pan-bellias/Reference-Letters-Server
+git clone https://github.com/panagiotis-bellias-it21871/reference-letters-fastapi-server.git
 virtualenv fvenv -p python3.X
 source fvenv/bin/activate
 pip install -r requirements.txt
+```
+and
+```bash
 cp ref_letters/.env.example ref_letters/.env
 ```
-
-Edit .env file to define
+editting .env file to define
+```vim
+DATABASE_URL=sqlite:///./dev.db
+KC_SERVER_URL="https://auth.some-domain.com/auth"
+KC_CLIENT_ID="test-client"
+KC_REALM="Test"
+KC_CLIENT_SECRET="GzgACcJzhzQ4j8kWhmhazt7WSdxDVUyE"
+```
+or
+```bash
+cp ref_letters/.env.docker.example ref_letters/.env
+```
 ```vim
 DATABASE_URL=postgresql://<DB-USERNAME>:<DB-PASSWORD>@localhost:5432/<DB-NAME>
+KC_SERVER_URL="http://keycloak_auth:8085/auth/"
+KC_CLIENT_ID="fastapi-service"
+KC_REALM="Clients"
+KC_CLIENT_SECRET="GzgACcJzhzQ4j8kWhmhazt7WSdxDVUyE"
 ```
-after you have created a database using [pgAdmin](https://www.youtube.com/watch?v=1wvDVBjNDys)
+in case you want to use postgresql either you are in a docker environment or not. First you should have created a database using [pgAdmin](https://www.youtube.com/watch?v=1wvDVBjNDys) or command line.
+The other variables are referred in keycloak usage where you should suit them according to the environment where keycloak service is running.
 
 ### Run application server
 ```bash
