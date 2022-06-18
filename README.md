@@ -13,7 +13,7 @@ A back end web application about reference letter handling in the context of DIT
 1. [Table Of Contents](#contents)  
 2. [Run Project Locally (Installation)](#locally)  
 3. [Deploy fastapi project to a VM (Virtual Machine)](#deployment)  
-3.1. [CI/CD tool configuration (Jenkins Server)](#jenkins)
+3.1. [CI/CD tool configuration (Jenkins Server)](#jenkins)  
 3.2. [Deployment with Docker and docker-compose using Ansible](#docker)  
 ...
 
@@ -62,99 +62,11 @@ uvicorn ref_letters.main:app --reload
 
 <a name="deployment"></a>
 ## Deploy fastapi project to a VM (Virtual Machine)
-
-We are going to need 4 VMs. One for the jenkins server and one for each execution environment (ansible, docker and
-kubernetes)
-
-* [Create VM in Azure Portal](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/quick-create-portal)
-* [SSH Access to VMs](https://help.skytap.com/connect-to-a-linux-vm-with-ssh.html)
-* [SSH Automation](https://linuxize.com/post/using-the-ssh-config-file/)
-* [Reserve Static IP in Azure](https://azure.microsoft.com/en-au/resources/videos/azure-friday-how-to-reserve-a-public-ip-range-in-azure-using-public-ip-prefix/)
+For deployment see [here](https://github.com/panagiotis-bellias-it21871/reference-letters-system#deploy-fastapi-and-vuejs-projects-to-a-vm-virtual-machine) 
 
 <a name="jenkins"></a>
 ### CI/CD tool configuration (Jenkins Server)
-
-* [Install Jenkins](https://www.jenkins.io/doc/book/installing/linux/)
-
-Make sure service is running
-```bash
-sudo systemctl status jenkins
-netstat -anlp | grep 8080 # needs package net-tools
-```
-
-<a name="conf_shell"></a>
-#### Step 1: Configure Shell
-Go to Dashboard / Manage Jenkins / Configure System / Shell / Shell Executable and type '/bin/bash'
-
-<a name="webhooks"></a>
-#### Step 2: Add webhooks both to fastapi and ansible repositories
-[Dublicate](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/duplicating-a-repository) repositories for easier configuration.
-
-* [Add Webhooks - see until Step 4](https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project)
-
-<a name="credentials"></a>
-#### Step 3: Add the credentials needed
-
-* [Add SSH keys & SSH Agent plugin](https://plugins.jenkins.io/ssh-agent/) with id 'ssh-ansible-vm' to access
-ansible-vm, and 'ssh-docker-vm' to access docker-vm
-* [Add Secret Texts](https://www.jenkins.io/doc/book/using/using-credentials/) for every environmental variable we
-need to define in our projects during deployment, like below
-
-```nano
-# ID                        What is the value?
-ansible-db-url              <value>
-docker-db-url
-docker-push-secret
-docker-user
-docker-prefix-image-fastapi
-fastapi-db-user
-fastapi-db-passwd
-fastapi-db
-keycloak-db-user
-keycloak-db-passwd
-keycloak-db
-etc.
-```
-
-<a name="jobs"></a>
-#### Create Jobs
-* [Create Freestyle project for Ansible code](https://www.guru99.com/create-builds-jenkins-freestyle-project.html)
-* [More for Ansible](https://github.com/pan-bellias/Ansible-Reference-Letter-Code.git)
-* [Create Pipeline project](https://www.jenkins.io/doc/pipeline/tour/hello-world/)
-* [Add Webhooks to both jobs - see until Step 9](https://www.blazemeter.com/blog/how-to-integrate-your-github-repository-to-your-jenkins-project)
-
-In the fastapi job the pipeline will be the [Jenkinsfile](Jenkinsfile)
-
-<a name="build"></a>
-##### Build-Checkout stage
-Takes the code from the git repository
-
-<a name="test"></a>
-##### Unit Test stage
-Activates a virtual environment, installs the requirements, copies the .env.example to use it as .env with some
-demo values for testing and uses pytest so the application can be tested before goes on production.
-NOTE: connect to your jenkins vm and do the below line so the test stage can run
-```bash
-<username>@<vm-name>:~$ sudo apt-get install libpcap-dev libpq-dev
-```
-
-##### E2E Testing
-##### Integration Testing
-##### UI Testing
-
-<a name="j-ansible"></a>
-##### Ansible Deployment
-Ansible connects to the ansible-vm through ssh agent and the ssh key we define there and runs a playbook for
-postgres database configuration, keycloak and fastapi service configuration passing the sensitive parameters from secret texts.
-
-<a name="j-docker"></a>
-##### Docker Deployment
-Ansible connects to the docker-vm through ssh and runs a playbook that it will define the sensitive parameters and
-will use docker-compose module to do docker-compose up the containers according to [docker-compose.yml](docker-compose.yml)
-
-<a name="j-k8s-pre"></a>
-##### Preparing k8s Deployment
-Here, to deploy our app we need a docker image updated. So we build the image according to [nonroot.Dockerfile](nonroot.Dockerfile), we are logging in Dockerhub and push the image there to be public available.
+For jenkins configuration see [here](https://github.com/panagiotis-bellias-it21871/reference-letters-system#cicd-tool-configuration-jenkins-server) 
 
 <a name="j-k8s"></a>
 ##### Kubernetes Deployment
