@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fastapi
+  name: fastapi-deployment
 spec:
   replicas: 1
   selector:
@@ -14,9 +14,9 @@ spec:
     spec:
       containers:
         - name: fastapi
-          image: ghcr.io/pan-bellias/ref-letters-server
+          image: 'ghcr.io/pan-bellias/ref-letters-server'
           ports:
-            - containerPort:8000
+            - containerPort: 8000
           envFrom:
             - configMapRef:
                 name: fastapi-config
