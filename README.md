@@ -11,13 +11,12 @@ A back end web application about reference letter handling in the context of DIT
 <a name="contents"></a>
 ## Table Of Contents
 1. [Table Of Contents](#contents)  
-2. [Run Project Locally (Installation)](#locally)
-2.1 [Clone and initialize project](#clone)
-2.2 [Run application server](#run_server)  
+2. [Run Project Locally (Installation)](#locally)   
+2.1 [Clone and initialize project](#clone)   
+2.2 [Run application server](#run_server)     
 3. [Deploy fastapi project to a VM (Virtual Machine)](#deployment)  
 3.1. [CI/CD tool configuration (Jenkins Server)](#jenkins)  
 3.2. [Deployment with Docker and docker-compose using Ansible](#docker)  
-...
 
 <a name="locally"></a>
 ## Run Project Locally (Installation)
