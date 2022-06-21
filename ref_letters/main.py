@@ -1,3 +1,4 @@
+import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Form #, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,6 +9,7 @@ from .db import database
 load_dotenv(verbose=True)
 
 origins = ["*"]
+#origins = os.getenv("ORIGINS", default="http://127.0.0.1:8080/")
 
 app = FastAPI()
 

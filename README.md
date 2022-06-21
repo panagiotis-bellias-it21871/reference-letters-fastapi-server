@@ -36,6 +36,7 @@ cp ref_letters/.env.example ref_letters/.env
 editting .env file to define
 ```vim
 DATABASE_URL=sqlite:///./dev.db
+ORIGINS = "http://127.0.0.1:8000" # client's ip and port
 KC_SERVER_URL="https://auth.some-domain.com/auth"
 KC_CLIENT_ID="test-client"
 KC_REALM="Test"
@@ -47,6 +48,7 @@ cp ref_letters/.env.docker.example ref_letters/.env
 ```
 ```vim
 DATABASE_URL=postgresql://<DB-USERNAME>:<DB-PASSWORD>@localhost:5432/<DB-NAME>
+ORIGINS = "http://vuejs/" # client's ip and port
 KC_SERVER_URL="http://keycloak_auth:8085/auth/"
 KC_CLIENT_ID="fastapi-service"
 KC_REALM="Clients"
