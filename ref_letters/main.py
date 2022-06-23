@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Form #, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from .routers import rl_requests, students, teachers #, keycloak_user_handling
+from .routers import rl_requests, students, teachers, keycloak_user_handling
 from .db import database
 
 load_dotenv(verbose=True)
@@ -24,7 +24,7 @@ app.add_middleware(
 app.include_router(rl_requests.router)
 app.include_router(students.router)
 app.include_router(teachers.router)
-#app.include_router(keycloak_user_handling.router)
+app.include_router(keycloak_user_handling.router)
 
 @app.on_event("startup")
 async def connect():
