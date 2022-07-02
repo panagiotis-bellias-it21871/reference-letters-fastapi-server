@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-clip
+spec:
+  type: ClusterIP
+  selector:
+    component: fastapi
+  ports:
+    - port: 8000
+      targetPort: 8000
