@@ -4,21 +4,26 @@ from typing import Optional
 
 class ReferenceLetterRequest(BaseModel):
     id: int
-    name: str
-    is_approved: Optional[bool] = None
-    is_declined: Optional[bool] = None
-    is_pending: Optional[bool] = None
+    teacher_id: int
+    student_id: int
+    carrier_name: str
+    carrier_email: str
+    status: str
+    text: str
 
 class Student(BaseModel):
     id: int
     name: str
-    school_id: int
     email: str
+    school: str
+    school_id: int
+    grades_url: str
 
 class Teacher(BaseModel):
     id: int
     name: str
     email: str
+    description: str
 
 class User(BaseModel):
     username: str

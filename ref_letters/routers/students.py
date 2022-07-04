@@ -20,8 +20,10 @@ async def get_a_student(student_id: int):
 async def add_student(student: Student):
     query = student_db.insert().values(
         name=student.name,
+        email=student.email,
+        school=student.school,
         school_id=student.school_id,
-        email=student.email
+        grades_url=student.grades_url
     )
     record_id = await database.execute(query)
     query = student_db.select().where(student_db.c.id == record_id)
@@ -32,8 +34,10 @@ async def add_student(student: Student):
 async def update_student(student_id: int, student: Student):
     query = student_db.update().where(student_db.c.id == student_id).values(
         name=student.name,
+        email=student.email,
+        school=student.school,
         school_id=student.school_id,
-        email=student.email
+        grades_url=student.grades_url
     )
     record_id = await database.execute(query)
     query = student_db.select().where(student_db.c.id == record_id)

@@ -16,14 +16,13 @@ metadata = sqlalchemy.MetaData()
 database = databases.Database(DATABASE_URL)
 
 # Our custom tables
-reference_letter_request_db = sqlalchemy.Table(
-    "reference_letter_request",
+teacher_db = sqlalchemy.Table(
+    "teacher",
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column("name", sqlalchemy.String(500)),
-    sqlalchemy.Column("is_approved", sqlalchemy.Boolean),
-    sqlalchemy.Column("is_declined", sqlalchemy.Boolean),
-    sqlalchemy.Column("is_pending", sqlalchemy.Boolean),
+    sqlalchemy.Column("email", sqlalchemy.String(750)),
+    sqlalchemy.Column("description", sqlalchemy.String(750)),
 )
 
 student_db = sqlalchemy.Table(
@@ -31,16 +30,23 @@ student_db = sqlalchemy.Table(
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column("name", sqlalchemy.String(500)),
-    sqlalchemy.Column("school_id", sqlalchemy.String(125)),
     sqlalchemy.Column("email", sqlalchemy.String(750)),
+    sqlalchemy.Column("school", sqlalchemy.String(125)),
+    sqlalchemy.Column("school_id", sqlalchemy.String(125)),
+    sqlalchemy.Column("grades_url", sqlalchemy.String(500)),
 )
 
-teacher_db = sqlalchemy.Table(
-    "teacher",
+reference_letter_request_db = sqlalchemy.Table(
+    "reference_letter_request",
     metadata,
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
-    sqlalchemy.Column("name", sqlalchemy.String(500)),
-    sqlalchemy.Column("email", sqlalchemy.String(750)),
+    sqlalchemy.Column("teacher_id", sqlalchemy.Integer, sqlalchemy.ForeignKey('teacher.id', ondelete='CASCADE')),
+    sqlalchemy.Column("student_id", sqlalchemy.Integer, sqlalchemy.ForeignKey('student.id', ondelete='CASCADE')),
+    sqlalchemy.Column("carrier_name", sqlalchemy.String(500)),
+    sqlalchemy.Column("carrier_email", sqlalchemy.String(500)),
+    sqlalchemy.Column("status", sqlalchemy.String(500)),
+    sqlalchemy.Column("text", sqlalchemy.String(500)),
+    sqlalchemy.Column("student_name", sqlalchemy.String(500)),
 )
 
 # Initialize db engine to have tables ready at application's startup

@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 from ..db import database, reference_letter_request_db
 from ..schemas import ReferenceLetterRequest
+from ..routers import students
 
 router = APIRouter()
 
@@ -19,10 +20,12 @@ async def get_a_rl_request(rl_request_id: int):
 @router.post("/rl_requests")
 async def add_rl_request(rl_request: ReferenceLetterRequest):
     query = reference_letter_request_db.insert().values(
-        name=rl_request.name,
-        is_approved=rl_request.is_approved,
-        is_declined=rl_request.is_declined,
-        is_pending=rl_request.is_pending
+        teacher_id=rl_request.teacher_id,
+        student_id=rl_request.student_id,
+        carrier_name=rl_request.carrier_name,
+        carrier_email=rl_request.carrier_email,
+        status=rl_request.status,
+        text=rl_request.text
     )
     record_id = await database.execute(query)
     query = reference_letter_request_db.select().where(reference_letter_request_db.c.id == record_id)
@@ -32,10 +35,12 @@ async def add_rl_request(rl_request: ReferenceLetterRequest):
 @router.put("/rl_requests/{rl_request_id}")
 async def update_rl_request(rl_request_id: int, rl_request: ReferenceLetterRequest):
     query = reference_letter_request_db.update().where(reference_letter_request_db.c.id == rl_request_id).values(
-        name=rl_request.name,
-        is_approved=rl_request.is_approved,
-        is_declined=rl_request.is_declined,
-        is_pending=rl_request.is_pending
+        teacher_id=rl_request.teacher_id,
+        student_id=rl_request.student_id,
+        carrier_name=rl_request.carrier_name,
+        carrier_email=rl_request.carrier_email,
+        status=rl_request.status,
+        text=rl_request.text
     )
     record_id = await database.execute(query)
     query = reference_letter_request_db.select().where(reference_letter_request_db.c.id == record_id)
