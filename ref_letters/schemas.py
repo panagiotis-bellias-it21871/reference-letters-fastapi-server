@@ -16,7 +16,7 @@ class Student(BaseModel):
     name: str
     email: str
     school: str
-    school_id: int
+    school_id: str
     grades_url: str
 
 class Teacher(BaseModel):
