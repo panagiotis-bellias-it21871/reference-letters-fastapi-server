@@ -1,6 +1,9 @@
 from lib2to3.pgen2.token import OP
-from pydantic import BaseModel
 from typing import Optional
+
+from fastapi_users.db import SQLAlchemyBaseUserTableUUID
+from pydantic import BaseModel
+
 
 class ReferenceLetterRequest(BaseModel):
     id: int
@@ -25,10 +28,13 @@ class Teacher(BaseModel):
     email: str
     description: str
 
-class User(BaseModel):
+class User(SQLAlchemyBaseUserTableUUID, BaseModel):
     username: str
-    email: Optional[str] = None
-    full_name: Optional[str] = None
+    email: str
+    full_name: str
+    student: bool
+    teacher: bool
+    admin: bool
     disabled: Optional[bool] = None
 
 class UserInDB(User):
