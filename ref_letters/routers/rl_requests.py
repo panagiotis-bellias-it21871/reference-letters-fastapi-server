@@ -5,7 +5,7 @@ from ..routers import students
 
 router = APIRouter()
 
-@router.get("/rl_requests")
+@router.get("/api/rl_requests")
 async def get_rl_requests():
     query = reference_letter_request_db.select()
     all_get = await database.fetch_all(query)
