@@ -3,7 +3,8 @@ from typing import Optional
 
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
 from pydantic import BaseModel
-
+from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
+Base: DeclarativeMeta = declarative_base()
 
 class ReferenceLetterRequest(BaseModel):
     id: int
@@ -28,7 +29,7 @@ class Teacher(BaseModel):
     email: str
     description: str
 
-class User(SQLAlchemyBaseUserTableUUID, BaseModel):
+class User(SQLAlchemyBaseUserTableUUID, Base):
     username: str
     email: str
     full_name: str
