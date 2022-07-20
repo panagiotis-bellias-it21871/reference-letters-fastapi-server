@@ -88,7 +88,7 @@ More about deployment with Docker see [here](https://github.com/panagiotis-belli
 
 ```bash
 # build image
-docker build . -t ghcr.io/pan-bellias/ref-letters-server:latest -f fastapi.nonroot.Dockerfile
+docker build . -t ghcr.io/panagiotis-bellias-it21871/ref-letters-fastapi-server:latest -f nonroot.Dockerfile
 # push image
-docker push ghcr.io/panagiotis-bellias-it21871/ref-letters-server:latest
+docker push ghcr.io/panagiotis-bellias-it21871/ref-letters-fastapi-server:latest
 ```  

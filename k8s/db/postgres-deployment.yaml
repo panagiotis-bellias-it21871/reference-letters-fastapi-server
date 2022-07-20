@@ -37,7 +37,7 @@ spec:
                 secretKeyRef:
                   name: pg-users
                   key: FAUSER
-	    - name: FASTAPI_DB_PASS
+	          - name: FASTAPI_DB_PASS
               valueFrom:
                 secretKeyRef:
                   name: pg-users
@@ -47,6 +47,7 @@ spec:
                 secretKeyRef:
                   name: pg-users
                   key: FADBNAME
+            """
             - name: KEYCLOAK_DB_USER
               valueFrom:
                 secretKeyRef:
@@ -62,6 +63,7 @@ spec:
                 secretKeyRef:
                   name: pg-users
                   key: KCDBNAME
+            """
           volumeMounts:
             - name: pg-database-persistent-volume-storage
               mountPath: /var/lib/postgresql/data

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: fastapi
-          image: 'ghcr.io/pan-bellias/ref-letters-server'
+          image: ghcr.io/panagiotis-bellias-it21871/ref-letters-fastapi-server
           ports:
             - containerPort: 8000
           envFrom:
