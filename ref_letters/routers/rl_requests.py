@@ -1,36 +1,27 @@
-from fastapi import APIRouter
-from ..db import database, reference_letter_request_db
-from ..schemas import ReferenceLetterRequest
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
+from ..database import database
+from .. import database, cruds, schemas
 
 router = APIRouter(prefix='/api/rl_requests')
 
 @router.get("/")
-async def get_rl_requests():
-    query = reference_letter_request_db.select()
-    all_get = await database.fetch_all(query)
-    return all_get
+async def get_rl_requests(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db)):
+    rl_requests = cruds.get_referenceletterrequests(db, skip=skip, limit=limit)
+    return rl_requests
 
 @router.get("/{rl_request_id}")
-async def get_a_rl_request(rl_request_id: int):
-    query = reference_letter_request_db.select().where(reference_letter_request_db.c.id == rl_request_id)
-    user = await database.fetch_one(query)
-    return {**user}
+async def get_a_rl_request(rl_request_id: int, db: Session = Depends(database.get_db)):
+    db_rl_request = cruds.get_referenceletterrequest(db, referenceletterrequest_id=rl_request_id)
+    if db_rl_request is None:
+        raise HTTPException(status_code=404, detail="Reference letter request not found")
+    return db_rl_request
 
 @router.post("/")
-async def add_rl_request(rl_request: ReferenceLetterRequest):
-    query = reference_letter_request_db.insert().values(
-        teacher_id=rl_request.teacher_id,
-        student_id=rl_request.student_id,
-        carrier_name=rl_request.carrier_name,
-        carrier_email=rl_request.carrier_email,
-        status=rl_request.status,
-        text=rl_request.text
-    )
-    record_id = await database.execute(query)
-    query = reference_letter_request_db.select().where(reference_letter_request_db.c.id == record_id)
-    row = await database.fetch_one(query)
-    return {**row}
+async def add_rl_request(rl_request: schemas.ReferenceLetterRequestCreate, db: Session = Depends(database.get_db)):
+    return cruds.create_referenceletterrequest(db=db, referenceletterrequest=rl_request)
 
+"""
 @router.put("/{rl_request_id}")
 async def update_rl_request(rl_request_id: int, rl_request: ReferenceLetterRequest):
     query = reference_letter_request_db.update().where(reference_letter_request_db.c.id == rl_request_id).values(
@@ -50,3 +41,4 @@ async def update_rl_request(rl_request_id: int, rl_request: ReferenceLetterReque
 async def delete_rl_request(rl_request_id: int):
     query = reference_letter_request_db.delete().where(reference_letter_request_db.c.id == rl_request_id)
     return await database.execute(query)
+"""

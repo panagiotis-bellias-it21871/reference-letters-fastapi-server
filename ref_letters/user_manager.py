@@ -8,7 +8,7 @@ from fastapi_users.authentication import (AuthenticationBackend,
                                           BearerTransport, JWTStrategy)
 from fastapi_users.db import SQLAlchemyUserDatabase
 
-from .schemas import User, get_user_db
+from .database import User, get_user_db
 
 SECRET = os.getenv("SECRET", default="SECRET")
 
