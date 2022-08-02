@@ -2,13 +2,25 @@ from fastapi.testclient import TestClient # Import TestClient.
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from ..main import app
+from ..database import Base, get_db
+import databases
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
-
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+DATABASE_URL = "sqlite:///./test.db"
+database = databases.Database(DATABASE_URL)
+engine = create_engine(DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 client = TestClient(app) # TestClient created passing the FastAPI application.
+def override_get_db():
+    try:
+        db = TestingSessionLocal()
+        yield db
+    finally:
+        db.close()
+
+app.dependency_overrides[get_db] = override_get_db
+
+Base.metadata.create_all(bind=engine)
 
 """
 Functions created with name that starts with test_ (pytest convention).
