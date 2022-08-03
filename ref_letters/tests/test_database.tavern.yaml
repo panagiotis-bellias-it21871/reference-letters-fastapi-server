@@ -1,0 +1,42 @@
+test_name: Make sure we accessing the database creating, viewing and deleting data
+
+stages:
+  - name: Create sample student
+    request:
+      url: http://localhost:8000/api/students
+      method: POST
+      json:
+        name: "Test Student"
+        email: "ref.letters.web.app@gmail.com"
+        school: "Test School"
+        school_id: "id1"
+        grades_url: "www.test.com"
+    response:
+      status_code: 200
+      json:
+        name: "Test Student"
+        email: "ref.letters.web.app@gmail.com"
+        school: "Test School"
+        school_id: "id1"
+        grades_url: "www.test.com"
+      save:
+        json:
+          student_id: id
+
+  - name: Create sample teacher
+    request:
+      url: http://localhost:8000/api/teachers
+      method: POST
+      json:
+        name: "Test Teacher"
+        email: "ref.letters.web.app@gmail.com"
+        description: "Test Description"
+      response:
+        status_code: 200
+        json:
+          name: "Test Teacher"
+          email: "ref.letters.web.app@gmail.com"
+          description: "Test Description"
+        save:
+          json:
+            teacher_id: id

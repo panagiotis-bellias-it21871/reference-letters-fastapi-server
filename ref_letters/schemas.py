@@ -9,7 +9,7 @@ class ReferenceLettersRequestBase(BaseModel):
 
 class ReferenceLetterRequestCreate(ReferenceLettersRequestBase):
     teacher_id: int
-    student_id: int  
+    student_id: int
 
 class ReferenceLetterRequest(ReferenceLettersRequestBase):
     id: int
@@ -25,7 +25,7 @@ class StudentBase(BaseModel):
     grades_url: str
 
 class StudentCreate(StudentBase):
-    pass 
+    pass
 
 class Student(StudentBase):
     id: int
