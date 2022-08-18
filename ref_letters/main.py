@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .database import User, create_db_and_tables, database
 from .routers import (rl_requests, students,  # , keycloak_user_handling
                       teachers)
-from .user_manager import (UserCreate, UserRead, UserUpdate, auth_backend,
+from .users import (UserCreate, UserRead, UserUpdate, auth_backend,
                            current_active_user, fastapi_users)
 
 load_dotenv(verbose=True)
