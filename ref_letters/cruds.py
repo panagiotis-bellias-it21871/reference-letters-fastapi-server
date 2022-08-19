@@ -46,8 +46,11 @@ def create_student(db: Session, student: schemas.StudentCreate):
 def get_referenceletterrequest(db: Session, referenceletterrequest_id: int):
     return db.query(database.ReferenceLetterRequest).filter(database.ReferenceLetterRequest.id == referenceletterrequest_id).first()
 
-def get_referenceletterrequests(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(database.ReferenceLetterRequest).offset(skip).limit(limit).all()
+def get_referenceletterrequests(db: Session, skip: int = 0, limit: int = 100, teacher: bool = False):
+    #if not teacher:
+        return db.query(database.ReferenceLetterRequest).offset(skip).limit(limit).all()
+    #else:
+    #    return db.query(database.ReferenceLetterRequest).offset(skip).limit(limit).filter(database.ReferenceLetterRequest.status=='pending')
 
 def create_referenceletterrequest(db: Session, referenceletterrequest: schemas.ReferenceLetterRequestCreate):
     db_referenceletterrequest = database.ReferenceLetterRequest(

@@ -21,6 +21,24 @@ async def get_a_rl_request(rl_request_id: int, db: Session = Depends(database.ge
 async def add_rl_request(rl_request: schemas.ReferenceLetterRequestCreate, db: Session = Depends(database.get_db)):
     return cruds.create_referenceletterrequest(db=db, referenceletterrequest=rl_request)
 
+@router.get("/pending")
+async def get_rl_requests(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db), teacher: bool = True):
+    rl_requests = cruds.get_referenceletterrequests(db, skip=skip, limit=limit, teacher=teacher)
+    return rl_requests
+
+@router.get("/pending/{rl_request_id}")
+async def get_rl_requests(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db), teacher: bool = True):
+    rl_requests = cruds.get_referenceletterrequests(db, skip=skip, limit=limit, teacher=teacher)
+    return rl_requests
+
+@router.post("/pending")
+async def add_rl_request(rl_request: schemas.ReferenceLetterRequestCreate, db: Session = Depends(database.get_db)):
+    return cruds.create_referenceletterrequest(db=db, referenceletterrequest=rl_request)
+
+@router.delete("/pending")
+async def add_rl_request(rl_request: schemas.ReferenceLetterRequestCreate, db: Session = Depends(database.get_db)):
+    return cruds.create_referenceletterrequest(db=db, referenceletterrequest=rl_request)
+
 """
 @router.put("/{rl_request_id}")
 async def update_rl_request(rl_request_id: int, rl_request: ReferenceLetterRequest):
