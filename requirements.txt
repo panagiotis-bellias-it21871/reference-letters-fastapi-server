@@ -1,9 +1,11 @@
+aiosmtplib==1.1.6
 aiosqlite==0.17.0
 anyio==3.5.0
 asgiref==3.5.1
 asyncpg==0.25.0
 attrs==21.4.0
 bcrypt==3.2.2
+blinker==1.5
 certifi==2022.5.18
 cffi==1.15.1
 charset-normalizer==2.0.12
@@ -15,6 +17,7 @@ docopt==0.6.2
 ecdsa==0.17.0
 email-validator==1.2.1
 fastapi==0.76.0
+fastapi-mail==1.1.4
 fastapi-users==10.1.1
 fastapi-users-db-sqlalchemy==4.0.3
 greenlet==1.1.2
@@ -22,8 +25,10 @@ h11==0.13.0
 idna==3.3
 iniconfig==1.1.1
 itsdangerous==2.1.2
+Jinja2==3.1.2
 jmespath==0.10.0
 makefun==1.13.1
+MarkupSafe==2.1.1
 packaging==21.3
 paho-mqtt==1.5.1
 passlib==1.7.4
