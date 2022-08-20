@@ -1,5 +1,5 @@
 # Use an existing docker image as a base
-FROM python:3.7-buster
+FROM python
 
 # Change working directory to /usr/data. This is where we'll put the requirements.txt file and the app directory.
 WORKDIR /usr/data
@@ -14,10 +14,13 @@ ENV PATH=$PATH:/usr/data/.local/bin
 # Copy the file with the requirements
 COPY ./requirements.txt ./
 
+COPY ./templates ./templates
+
 # Copy main.py file
 COPY ./ref_letters app
 
 # Install the package dependencies in the requirements file.
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # change permission on workdir

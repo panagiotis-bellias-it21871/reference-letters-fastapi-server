@@ -12,7 +12,7 @@ from .users import (UserCreate, UserRead, UserUpdate, auth_backend,
 
 load_dotenv(verbose=True)
 
-origins = os.getenv("ORIGINS", default="http://127.0.0.1:8080/")
+origins = os.getenv("ORIGINS", default=["http://127.0.0.1:8080/"])
 
 app = FastAPI()
 
