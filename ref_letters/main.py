@@ -1,13 +1,14 @@
 import os
+
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .database import create_db_and_tables, database
-from .routers import (rl_requests, students,  # , keycloak_user_handling
-                      teachers, home)
+from .routers import (home, rl_requests, students,  # , keycloak_user_handling
+                      teachers)
 from .users import (UserCreate, UserRead, UserUpdate, auth_backend,
-                           fastapi_users)
+                    fastapi_users)
 
 load_dotenv(verbose=True)
 
