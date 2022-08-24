@@ -8,26 +8,27 @@ from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID
 from fastapi_users_db_sqlalchemy import AsyncSession, SQLAlchemyUserDatabase
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 
 load_dotenv(verbose=True)
 
 DATABASE_URL = os.getenv("DATABASE_URL", default="")             # Declare database url (e.g. sqlite or postgreSQL)
+Base: DeclarativeMeta = declarative_base()
 database = databases.Database(DATABASE_URL)
-engine = sqlalchemy.create_engine(
-    DATABASE_URL
-)
 
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_async_engine(DATABASE_URL)
+async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
+#SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 def get_db():
-    db = SessionLocal()
+    #db = SessionLocal()
+    db = async_session_maker
     try:
         yield db
     finally:
         db.close()
-
-Base: DeclarativeMeta = declarative_base()
 
 class Teacher(Base):
     __tablename__ = "teacher"
@@ -72,11 +73,9 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     disabled = Column(Boolean)
 
 async def create_db_and_tables():
-    Base.metadata.create_all(bind=engine)
-    #async with engine.begin() as conn:
-    #    await conn.run_sync(Base.metadata.create_all)
-
-async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+    #Base.metadata.create_all(bind=engine)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     async with async_session_maker() as session:
@@ -85,5 +84,5 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 async def get_user_db(session: AsyncSession = Depends(get_async_session)):
     yield SQLAlchemyUserDatabase(session, User)
 
-class UserInDB(User):
-    hashed_password: str
+#class UserInDB(User):
+#    hashed_password: str

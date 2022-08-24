@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from sqlalchemy.orm import Session
 from ..database import database
 from .. import database, cruds, schemas
-from . import send_email as se
+#from . import send_email as se
 
 router = APIRouter(prefix='/api/rl_requests')
 
@@ -34,6 +34,7 @@ async def get_a_rl_request(rl_request_id: int, db: Session = Depends(database.ge
         raise HTTPException(status_code=404, detail="Reference letter request not found")
     return db_rl_request
 
+'''
 @router.post("/pending/{rl_request_id}")
 async def approve_rl_request(rl_request_id: int, background_tasks: BackgroundTasks, db: Session = Depends(database.get_db)):
     #db_rl_request = cruds.approve_referenceletterrequest(db, referenceletterrequest_id=rl_request_id)
@@ -42,17 +43,18 @@ async def approve_rl_request(rl_request_id: int, background_tasks: BackgroundTas
 
     await se.send_email_async('Hello World','belliaspan@gmail.com',
         "Test message")
-    
-    #se.send_email_background(background_tasks, 'Hello World',   
+
+    #se.send_email_background(background_tasks, 'Hello World',
     #'belliaspan@gmail.com', "{'title': 'Hello World', 'name':       'John Doe'}")
     return 'Success'
+'''
 
 @router.delete("/pending/{rl_request_id}")
 async def decline_rl_request(rl_request_id: int, db: Session = Depends(database.get_db)):
     db_rl_request = cruds.get_referenceletterrequest(db, referenceletterrequest_id=rl_request_id)
     if db_rl_request is None:
         raise HTTPException(status_code=404, detail="Reference letter request not found")
-    
+
     return db_rl_request
 
 """
