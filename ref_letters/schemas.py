@@ -40,7 +40,7 @@ class TeacherBase(BaseModel):
     description: str
 
 class TeacherCreate(TeacherBase):
-    pass 
+    pass
 
 class Teacher(TeacherBase):
     id: int
