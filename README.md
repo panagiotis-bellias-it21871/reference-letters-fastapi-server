@@ -91,4 +91,4 @@ More about deployment with Docker see [here](https://github.com/panagiotis-belli
 docker build . -t ghcr.io/panagiotis-bellias-it21871/ref-letters-fastapi-server:latest -f nonroot.Dockerfile
 # push image
 docker push ghcr.io/panagiotis-bellias-it21871/ref-letters-fastapi-server:latest
-```  
+```  ---
