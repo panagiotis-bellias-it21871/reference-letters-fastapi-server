@@ -25,10 +25,10 @@ async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit
 def get_db():
     #db = SessionLocal()
     db = async_session_maker
-    try:
-        yield db
-    finally:
-        db.close()
+    #try:
+    yield db
+    #finally:
+    #    db.close()
 
 class Teacher(Base):
     __tablename__ = "teacher"
