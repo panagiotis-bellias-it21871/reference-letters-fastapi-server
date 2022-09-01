@@ -1,7 +1,0 @@
-curl -H "Content-Type: application/json" -X POST -d "{\"email\": \"king.arthur@camelot.bt\",\"password\": \"guinevere\",\"username\": \"king.arthur\",\"full_name\": \"King Arthur\",\"is_verified\": true,\"student\": true, \"teacher\": false}" http://localhost:8000/auth/register
->> {
-    "id":"2e301e61-1b1b-42e6-a5b7-47f5d7722734",
-    "email":"king.arthur@camelot.bt",
-    "is_active":true,
-    "is_superuser":false,
-    "is_verified":false,"username":"king.arthur","full_name":"King Arthur","student":true,"teacher":false}
