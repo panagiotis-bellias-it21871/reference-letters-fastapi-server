@@ -12,6 +12,7 @@ from .database import User, get_user_db
 from .routers import send_email as mail
 
 SECRET = os.getenv("SECRET", default="SECRET")
+HOST = os.getenv("ORIGIN", default="http://localhost:8080")
 
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
@@ -40,7 +41,15 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         self, user: User, token: str, request: Optional[Request] = None
     ):
         print(f"Verification requested for user {user.id}. Verification token: {token}")
-        await mail.send_email_async('Email Verification', user.email, f"<p>Token is <b>{token}</b></p>")
+        email = {
+            "subject": "Email Verification",
+            "email": [user.email],
+            "body": {
+                "host": HOST,
+                "token": token
+            }
+        }
+        print(await mail.send_email_async(email))
 
 async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):
     yield UserManager(user_db)

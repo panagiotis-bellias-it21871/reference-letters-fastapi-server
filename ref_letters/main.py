@@ -11,13 +11,13 @@ from .users import (UserCreate, UserRead, UserUpdate, auth_backend, fastapi_user
 
 load_dotenv(verbose=True)
 
-origins = os.getenv("ORIGINS", default=["http://localhost:8080/"])
+origin = os.getenv("ORIGIN", default=["http://localhost:8080/"])
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=origin,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
