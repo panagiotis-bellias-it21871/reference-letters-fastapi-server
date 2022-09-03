@@ -5,7 +5,7 @@ Methods that use mailing functionality
 import os
 from fastapi import BackgroundTasks
 from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
-
+from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv('.env')
 
@@ -27,10 +27,10 @@ conf = ConnectionConfig(
     MAIL_TLS=True,
     MAIL_SSL=False,
     USE_CREDENTIALS=True,
-    TEMPLATE_FOLDER='./templates/email'
+    TEMPLATE_FOLDER=Path(__file__).parent / 'templates'
 )
 
-async def send_email_async(subject: str, email_to: str, body: str):
+async def send_email_async(subject: str, email_to: str, body: str):#, template_name: str):
     message = MessageSchema(
         subject=subject,
         recipients=[email_to],
@@ -39,9 +39,9 @@ async def send_email_async(subject: str, email_to: str, body: str):
     )
     
     fm = FastMail(conf)
-    await fm.send_message(message, template_name='email.html')
+    await fm.send_message(message)#, template_name=template_name)
 
-def send_email_background(background_tasks: BackgroundTasks, subject: str, email_to: str, body: str):
+def send_email_background(background_tasks: BackgroundTasks, subject: str, email_to: str, body: str, template_name: str):
     message = MessageSchema(
         subject=subject,
         recipients=[email_to],
@@ -51,4 +51,4 @@ def send_email_background(background_tasks: BackgroundTasks, subject: str, email
     
     fm = FastMail(conf)
     background_tasks.add_task(
-       fm.send_message, message, template_name='email.html')
+       fm.send_message, message, template_name=template_name)

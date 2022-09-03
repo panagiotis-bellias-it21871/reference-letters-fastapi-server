@@ -9,6 +9,7 @@ from fastapi_users.authentication import (AuthenticationBackend,
 from fastapi_users.db import SQLAlchemyUserDatabase
 
 from .database import User, get_user_db
+from .routers import send_email as mail
 
 SECRET = os.getenv("SECRET", default="SECRET")
 
@@ -39,7 +40,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         self, user: User, token: str, request: Optional[Request] = None
     ):
         print(f"Verification requested for user {user.id}. Verification token: {token}")
-        yield token # not tested
+        await mail.send_email_async('Email Verification', user.email, f"<p>Token is <b>{token}</b></p>")
 
 async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):
     yield UserManager(user_db)
