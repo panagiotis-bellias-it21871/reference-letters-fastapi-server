@@ -19,7 +19,6 @@ class ReferenceLetterRequest(ReferenceLettersRequestBase):
 
 class StudentBase(BaseModel):
     name: str
-    email: str
     school: str
     school_id: str
     grades_url: str
@@ -36,7 +35,6 @@ class Student(StudentBase):
 
 class TeacherBase(BaseModel):
     name: str
-    email: str
     description: str
 
 class TeacherCreate(TeacherBase):

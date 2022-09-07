@@ -1,46 +1,35 @@
-from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy.orm import Session
-from ..database import database
-from .. import database, cruds, schemas
+from typing import List, Optional
+from fastapi import APIRouter
+from .. import schemas
+from ..database import Student, async_session_maker as async_session
+from ..data_access_layer import StudentDAL
 
 router = APIRouter(prefix='/api/students')
 
+@router.post("/")
+async def create_student(student: schemas.StudentCreate):
+    async with async_session() as session:
+        async with session.begin():
+            student_dal = StudentDAL(session)
+            return await student_dal.create_student(student.name, student.school, student.school_id, student.grades_url)
+
 @router.get("/")
-async def get_students(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db)):
-    students = cruds.get_students(db, skip=skip, limit=limit)
-    return students
+async def get_all_students() -> List[Student]:
+    async with async_session() as session:
+        async with session.begin():
+            student_dal = StudentDAL(session)
+            return await student_dal.get_all_students()
 
 @router.get("/{student_id}")
-async def get_a_student(student_id: int, db: Session = Depends(database.get_db)):
-    db_student = cruds.get_student(db, student_id=student_id)
-    if db_student is None:
-        raise HTTPException(status_code=404, detail="Student not found")
-    return db_student
+async def get_a_student(student_id: int) -> Student:
+    async with async_session() as session:
+        async with session.begin():
+            student_dal = StudentDAL(session)
+            return await student_dal.get_a_student(student_id)
 
-@router.post("/")
-async def add_student(student: schemas.StudentCreate, db: Session = Depends(database.get_db)):
-    db_student = cruds.get_student_by_email(db, email=student.email)
-    if db_student:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    return cruds.create_student(db=db, student=student)
-
-"""
 @router.put("/{student_id}")
-async def update_student(student_id: int, student: Student):
-    query = student_db.update().where(student_db.c.id == student_id).values(
-        name=student.name,
-        email=student.email,
-        school=student.school,
-        school_id=student.school_id,
-        grades_url=student.grades_url
-    )
-    record_id = await database.execute(query)
-    query = student_db.select().where(student_db.c.id == record_id)
-    row = await database.fetch_one(query)
-    return {**row}
-
-@router.delete("/{student_id}")
-async def delete_student(student_id: int):
-    query = student_db.delete().where(student_db.c.id == student_id)
-    return await database.execute(query)
-"""
+async def update_a_student(student_id: int, name: Optional[str] = None, school: Optional[str] = None, school_id: Optional[str] = None, grades_url: Optional[str] = None):
+    async with async_session() as session:
+        async with session.begin():
+            student_dal = StudentDAL(session)
+            return await student_dal.update_student(name, school, school_id, grades_url):
