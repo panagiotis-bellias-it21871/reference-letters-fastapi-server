@@ -46,7 +46,8 @@ class StudentDAL():
         q = await self.db_session.execute(select(Student).where(Student.id == student_id))
         return q.scalars().all()
 
-    async def update_student(self, student_id: int, name: Optional[str], school: Optional[str], school_id: Optional[str], grades_url: Optional[str]):
+    async def update_student(self, student_id: int, name: Optional[str], school: Optional[str], school_id: Optional[str], 
+            grades_url: Optional[str]):
         q = update(Student).where(Student.id == student_id)
         if name:
             q = q.values(name=name)
@@ -62,8 +63,39 @@ class ReferenceLetterRequestDAL():
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    async def create_rl_request(self, teacher_id: int, student_id: int, carrier_name: str, carrier_email: str, status: str, text: str):
-        new_rl_request = ReferenceLetterRequest(teacher_id=teacher_id, student_id=student_id, carrier_name=carrier_name, carrier_email=carrier_email, status=status, text=text)
+    # get for a student
+    async def get_students_rl_requests(self, student_id: int) -> List[ReferenceLetterRequest]:
+        q = await self.db.session.execute(select(ReferenceLetterRequest).where(ReferenceLetterRequest.student_id == student_id).
+            order_by(ReferenceLetterRequest.id))
+        return q.scalars().all()
+
+    # get pending for a teacher
+    async def get_pending_for_teacher(self, teacher_id: int) -> List[ReferenceLetterRequest]:
+        q = await self.db.session.execute(
+            select(ReferenceLetterRequest).where(ReferenceLetterRequest.teacher_id == teacher_id and 
+                ReferenceLetterRequest.status == "pending").
+            order_by(ReferenceLetterRequest.id)
+        )
+        return q.scalars().all()
+
+    # approve a pending
+    async def approve_rl_request(self, rl_request_id: int, text: str):
+        q = update(ReferenceLetterRequest).where(ReferenceLetterRequest.id == rl_request_id and 
+                ReferenceLetterRequest.status == "pending")
+        q = q.values(status="approved", text=text)
+        await self.db_session.execute(q)
+
+    # decline a pending
+    async def decline_rl_request(self, rl_request_id: int):
+        q = update(ReferenceLetterRequest).where(ReferenceLetterRequest.id == rl_request_id and 
+                ReferenceLetterRequest.status == "pending")
+        q = q.values(status="declined")
+        await self.db_session.execute(q)
+
+    async def create_rl_request(self, teacher_id: int, student_id: int, carrier_name: str, carrier_email: str, status: str, 
+                text: str):
+        new_rl_request = ReferenceLetterRequest(teacher_id=teacher_id, student_id=student_id, carrier_name=carrier_name, 
+            carrier_email=carrier_email, status=status, text=text)
         self.db_session.add(new_rl_request)
         await self.db_session.flush()
     
@@ -75,7 +107,8 @@ class ReferenceLetterRequestDAL():
         q = await self.db_session.execute(select(ReferenceLetterRequest).where(ReferenceLetterRequest.id == rl_request_id))
         return q.scalars().all()
 
-    async def update_rl_request(self, rl_request_id: int, teacher_id: Optional[int], student_id: Optional[int], carrier_name: Optional[str], carrier_email: Optional[str], status: Optional[str], text: Optional[str]):
+    async def update_rl_request(self, rl_request_id: int, teacher_id: Optional[int], student_id: Optional[int], 
+            carrier_name: Optional[str], carrier_email: Optional[str], status: Optional[str], text: Optional[str]):
         q = update(ReferenceLetterRequest).where(ReferenceLetterRequest.id == rl_request_id)
         if teacher_id:
             q = q.values(teacher_id=teacher_id)

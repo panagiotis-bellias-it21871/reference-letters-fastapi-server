@@ -30,8 +30,8 @@ class Teacher(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     description = Column(String)
-
-    #reference_letter_requests = relationship("ReferenceLetterRequest", back_populates="to_teacher")
+    user_username = Column(String, ForeignKey("user.username"))
+    user = relationship("User")
 
 class Student(Base):
     __tablename__ = "student"
@@ -40,8 +40,8 @@ class Student(Base):
     school = Column(String)
     school_id = Column(String)
     grades_url = Column(String)
-
-    #reference_letter_requests = relationship("ReferenceLetterRequest", back_populates="from_student")
+    user_username = Column(String, ForeignKey("user.username"))
+    user = relationship("User")
 
 class ReferenceLetterRequest(Base):
     __tablename__ = "reference_letter_request"
@@ -53,11 +53,8 @@ class ReferenceLetterRequest(Base):
     status = Column(String)
     text = Column(String)
 
-    #to_teacher = relationship("Teacher", back_populates="reference_letter_requests")
-    #from_student = relationship("Student", back_populates="reference_letter_requests")
-
 class User(SQLAlchemyBaseUserTableUUID, Base):
-    username = Column(String)
+    username = Column(String, unique=True)
     email = Column(String)
     full_name = Column(String)
     student = Column(Boolean)

@@ -16,9 +16,3 @@ async def authenticated_route(user: User = Depends(current_active_user)):
 @router.get("/ping/")
 async def ping():
     return {"ping": "pong!"}
-
-'''
-@router.post("/language/")
-async def language(name: str = Form(...), type: str = Form(...)):
-    return {"name": name, "type": type}
-'''

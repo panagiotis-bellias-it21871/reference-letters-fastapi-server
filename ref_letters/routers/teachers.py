@@ -1,7 +1,8 @@
 from typing import List, Optional
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, HTTPException
 from .. import schemas
-from ..database import Teacher, async_session_maker as async_session
+from ..database import User, Teacher, async_session_maker as async_session
+from ..users import current_active_user
 from ..data_access_layer import TeacherDAL
 
 router = APIRouter(prefix='/api/teachers')
@@ -14,21 +15,27 @@ async def create_teacher(teacher: schemas.TeacherCreate):
             return await teacher_dal.create_teacher(teacher.name, teacher.description)
 
 @router.get("/")
-async def get_all_teachers() -> List[Teacher]:
-    async with async_session() as session:
-        async with session.begin():
-            teacher_dal = TeacherDAL(session)
-            return await teacher_dal.get_all_teachers()
+async def get_all_teachers(user: User = Depends(current_active_user)) -> List[Teacher]:
+    if user.is_superuser or user.student:
+        async with async_session() as session:
+            async with session.begin():
+                teacher_dal = TeacherDAL(session)
+                return await teacher_dal.get_all_teachers()
+    else:
+        raise HTTPException(status_code=403, detail="Only students and admins can access these resources")
 
 @router.get("/{teacher_id}")
-async def get_a_teacher(teacher_id: int) -> Teacher:
+async def get_a_teacher(teacher_id: int, user: User = Depends(current_active_user)) -> Teacher:
+    if not user:
+        raise HTTPException(status_code=403, detail="Only system users can access these resources")
     async with async_session() as session:
         async with session.begin():
             teacher_dal = TeacherDAL(session)
             return await teacher_dal.get_a_teacher(teacher_id)
 
 @router.put("/{teacher_id}")
-async def update_a_teacher(teacher_id: int, name: Optional[str] = None, description: Optional[str] = None):
+async def update_a_teacher(teacher_id: int, name: Optional[str] = None, description: Optional[str] = None, 
+        user: User = Depends(current_active_user)):
     async with async_session() as session:
         async with session.begin():
             teacher_dal = TeacherDAL(session)

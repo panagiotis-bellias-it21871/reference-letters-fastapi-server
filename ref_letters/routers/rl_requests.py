@@ -1,80 +1,72 @@
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
-from sqlalchemy.orm import Session
-from ..database import database
-from .. import database, cruds, schemas
-#from . import send_email as se
+from typing import List, Optional
+from fastapi import APIRouter
+from .. import schemas
+from ..database import ReferenceLetterRequest, async_session_maker as async_session
+from ..data_access_layer import ReferenceLetterRequestDAL
 
 router = APIRouter(prefix='/api/rl_requests')
 
-@router.get("/")
-async def get_rl_requests(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db)):
-    rl_requests = cruds.get_referenceletterrequests(db, skip=skip, limit=limit)
-    return rl_requests
+# get for a student
+@router.get("/{student_id}")
+async def get_students_rl_requests(student_id: int) -> List[ReferenceLetterRequest]:
+    async with async_session() as session:
+        async with session.begin():
+            rl_request_dal = ReferenceLetterRequestDAL(session)
+            return await rl_request_dal.get_students_rl_requests(student_id)
 
-@router.get("/{rl_request_id}")
-async def get_a_rl_request(rl_request_id: int, db: Session = Depends(database.get_db)):
-    db_rl_request = cruds.get_referenceletterrequest(db, referenceletterrequest_id=rl_request_id)
-    if db_rl_request is None:
-        raise HTTPException(status_code=404, detail="Reference letter request not found")
-    return db_rl_request
+# get pending for a teacher
+@router.get("/pending/{teacher_id}")
+async def get_pending_for_teacher(teacher_id: int) -> List[ReferenceLetterRequest]:
+    async with async_session() as session:
+        async with session.begin():
+            rl_request_dal = ReferenceLetterRequestDAL(session)
+            return await rl_request_dal.get_pending_for_teacher(teacher_id)
+
+# approve a pending
+@router.put("{rl_request_id}/approve")
+async def approve_rl_request(rl_request_id: int, text: str):
+    async with async_session() as session:
+        async with session.begin():
+            rl_request_dal = ReferenceLetterRequestDAL(session)
+            # send mail here
+            return await rl_request_dal.approve_rl_request(rl_request_id, text)
+
+# decline a pending
+@router.delete("{rl_request_id}/decline")
+async def decline_rl_request(rl_request_id: int):
+    async with async_session() as session:
+        async with session.begin():
+            rl_request_dal = ReferenceLetterRequestDAL(session)
+            # send mail here
+            return await rl_request_dal.decline_rl_request(rl_request_id)
 
 @router.post("/")
-async def add_rl_request(rl_request: schemas.ReferenceLetterRequestCreate, db: Session = Depends(database.get_db)):
-    return cruds.create_referenceletterrequest(db=db, referenceletterrequest=rl_request)
+async def create_rl_request(rl_request: schemas.ReferenceLetterRequestCreate):
+    async with async_session() as session:
+        async with session.begin():
+            rl_request_dal = ReferenceLetterRequestDAL(session)
+            return await rl_request_dal.create_rl_request(rl_request.teacher_id, rl_request.student_id, 
+                rl_request.carrier_name, rl_request.carrier_email, rl_request.status, rl_request.text)
 
-@router.get("/pending")
-async def get_pending_rl_requests(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db), teacher: bool = True):
-    rl_requests = cruds.get_referenceletterrequests(db, skip=skip, limit=limit, teacher=teacher)
-    return rl_requests
+@router.get("/")
+async def get_all_rl_requests() -> List[ReferenceLetterRequest]:
+    async with async_session() as session:
+        async with session.begin():
+            rl_request_dal = ReferenceLetterRequestDAL(session)
+            return await rl_request_dal.get_all_rl_requests()
 
-@router.get("/pending/{rl_request_id}")
-async def get_a_rl_request(rl_request_id: int, db: Session = Depends(database.get_db)):
-    db_rl_request = cruds.get_referenceletterrequest(db, referenceletterrequest_id=rl_request_id)
-    if db_rl_request is None:
-        raise HTTPException(status_code=404, detail="Reference letter request not found")
-    return db_rl_request
+@router.get("/{rl_request_id}")
+async def get_a_rl_request(rl_request_id: int) -> ReferenceLetterRequest:
+    async with async_session() as session:
+        async with session.begin():
+            rl_request_dal = ReferenceLetterRequestDAL(session)
+            return await rl_request_dal.get_a_rl_request(rl_request_id)
 
-'''
-@router.post("/pending/{rl_request_id}")
-async def approve_rl_request(rl_request_id: int, background_tasks: BackgroundTasks, db: Session = Depends(database.get_db)):
-    #db_rl_request = cruds.approve_referenceletterrequest(db, referenceletterrequest_id=rl_request_id)
-    #if db_rl_request is None:
-    #    raise HTTPException(status_code=404, detail="Reference letter request not found")
-
-    await se.send_email_async('Hello World','belliaspan@gmail.com',
-        "Test message")
-
-    #se.send_email_background(background_tasks, 'Hello World',
-    #'belliaspan@gmail.com', "{'title': 'Hello World', 'name':       'John Doe'}")
-    return 'Success'
-'''
-
-@router.delete("/pending/{rl_request_id}")
-async def decline_rl_request(rl_request_id: int, db: Session = Depends(database.get_db)):
-    db_rl_request = cruds.get_referenceletterrequest(db, referenceletterrequest_id=rl_request_id)
-    if db_rl_request is None:
-        raise HTTPException(status_code=404, detail="Reference letter request not found")
-
-    return db_rl_request
-
-"""
 @router.put("/{rl_request_id}")
-async def update_rl_request(rl_request_id: int, rl_request: ReferenceLetterRequest):
-    query = reference_letter_request_db.update().where(reference_letter_request_db.c.id == rl_request_id).values(
-        teacher_id=rl_request.teacher_id,
-        student_id=rl_request.student_id,
-        carrier_name=rl_request.carrier_name,
-        carrier_email=rl_request.carrier_email,
-        status=rl_request.status,
-        text=rl_request.text
-    )
-    record_id = await database.execute(query)
-    query = reference_letter_request_db.select().where(reference_letter_request_db.c.id == record_id)
-    row = await database.fetch_one(query)
-    return {**row}
-
-@router.delete("/{rl_request_id}")
-async def delete_rl_request(rl_request_id: int):
-    query = reference_letter_request_db.delete().where(reference_letter_request_db.c.id == rl_request_id)
-    return await database.execute(query)
-"""
+async def update_rl_request(rl_request_id: int, teacher_id: Optional[int] = None, student_id: Optional[int] = None, 
+            carrier_name: Optional[str] = None, carrier_email: Optional[str] = None, status: Optional[str] = None, text: Optional[str] = None):
+    async with async_session() as session:
+        async with session.begin():
+            rl_request_dal = ReferenceLetterRequestDAL(session)
+            return await rl_request_dal.update_rl_request(rl_request_id, teacher_id, student_id, carrier_name, 
+                carrier_email, status, text)

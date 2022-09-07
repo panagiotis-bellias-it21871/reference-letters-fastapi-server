@@ -28,8 +28,9 @@ async def get_a_student(student_id: int) -> Student:
             return await student_dal.get_a_student(student_id)
 
 @router.put("/{student_id}")
-async def update_a_student(student_id: int, name: Optional[str] = None, school: Optional[str] = None, school_id: Optional[str] = None, grades_url: Optional[str] = None):
+async def update_a_student(student_id: int, name: Optional[str] = None, school: Optional[str] = None, school_id: Optional[str] = None, 
+        grades_url: Optional[str] = None):
     async with async_session() as session:
         async with session.begin():
             student_dal = StudentDAL(session)
-            return await student_dal.update_student(name, school, school_id, grades_url):
+            return await student_dal.update_student(student_id, name, school, school_id, grades_url)
