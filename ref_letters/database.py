@@ -15,22 +15,26 @@ from dotenv import load_dotenv
 load_dotenv(verbose=True)
 
 DATABASE_URL = os.getenv("DATABASE_URL", default="sqlite+aiosqlite:///./test.db")   # Declare database url
+database = databases.Database(DATABASE_URL)
 Base: DeclarativeMeta = declarative_base()
 engine = create_async_engine(DATABASE_URL)
 async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
 
-class Teacher(Base):
+class User(SQLAlchemyBaseUserTableUUID, Base):
+    username = Column(String, unique=True)
+    email = Column(String)
+    full_name = Column(String)
+
+class Teacher(User):
     __tablename__ = "teacher"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
+    t_id = Column(String, primary_key=True, index=True)
     description = Column(String)
     user_username = Column(String, ForeignKey("user.username"))
     user = relationship("User")
 
-class Student(Base):
+class Student(User):
     __tablename__ = "student"
-    id = Column(Integer, primary_key=True, index=True)
-    name = Column(String)
+    s_id = Column(String, primary_key=True, index=True)
     school = Column(String)
     school_id = Column(String)
     grades_url = Column(String)
@@ -40,21 +44,12 @@ class Student(Base):
 class ReferenceLetterRequest(Base):
     __tablename__ = "reference_letter_request"
     id = Column(Integer, primary_key=True, index=True)
-    teacher_id = Column(Integer, ForeignKey("teacher.id"))
-    student_id = Column(Integer, ForeignKey("student.id"))
+    teacher_id = Column(String, ForeignKey("teacher.id"))
+    student_id = Column(String, ForeignKey("student.id"))
     carrier_name = Column(String)
     carrier_email = Column(String)
     status = Column(String)
     text = Column(String)
-
-class User(SQLAlchemyBaseUserTableUUID, Base):
-    username = Column(String, unique=True)
-    email = Column(String)
-    full_name = Column(String)
-    student = Column(Boolean)
-    teacher = Column(Boolean)
-    admin = Column(Boolean)
-    disabled = Column(Boolean)
 
 async def create_db_and_tables():
     async with engine.begin() as conn:
