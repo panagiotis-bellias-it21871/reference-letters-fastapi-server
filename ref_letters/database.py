@@ -44,8 +44,8 @@ class Student(User):
 class ReferenceLetterRequest(Base):
     __tablename__ = "reference_letter_request"
     id = Column(Integer, primary_key=True, index=True)
-    teacher_id = Column(String, ForeignKey("teacher.id"))
-    student_id = Column(String, ForeignKey("student.id"))
+    teacher_id = Column(String, ForeignKey("teacher.t_id"))
+    student_id = Column(String, ForeignKey("student.s_id"))
     carrier_name = Column(String)
     carrier_email = Column(String)
     status = Column(String)

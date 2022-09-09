@@ -59,18 +59,15 @@ current_active_user = fastapi_users.current_user(active=True)
 
 class UserRead(schemas.BaseUser[uuid.UUID]):
     username: str
+    email: str
     full_name: str
-    student: bool
-    teacher: bool
 
 class UserCreate(schemas.BaseUserCreate):
     username: str
+    email: str
     full_name: str
-    student: bool
-    teacher: bool
 
 class UserUpdate(schemas.BaseUserUpdate):
     username: str
+    email: str
     full_name: str
-    student: bool
-    teacher: bool
