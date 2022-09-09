@@ -18,7 +18,6 @@ COPY ./requirements.txt ./
 COPY ./ref_letters app
 
 # Install the package dependencies in the requirements file.
-RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # change permission on workdir
