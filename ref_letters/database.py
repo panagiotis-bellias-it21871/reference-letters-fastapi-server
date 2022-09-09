@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 load_dotenv(verbose=True)
 
 DATABASE_URL = os.getenv("DATABASE_URL", default="sqlite+aiosqlite:///./test.db")   # Declare database url
+database = databases.Database(DATABASE_URL)
 Base: DeclarativeMeta = declarative_base()
 engine = create_async_engine(DATABASE_URL)
 async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)

@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.responses import RedirectResponse
 
 from .database import create_db_and_tables, database
 from .routers import (home, rl_requests, students,  teachers)
@@ -49,6 +50,11 @@ app.include_router(
     prefix="/auth",
     tags=["auth"],
 )
+
+@app.get("/")
+async def root():
+    response = RedirectResponse("/api/")
+    return response
 
 @app.on_event("startup")
 async def connect():

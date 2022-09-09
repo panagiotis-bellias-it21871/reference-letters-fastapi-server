@@ -36,7 +36,10 @@ async def get_a_teacher(teacher_id: int, user: User = Depends(current_active_use
 @router.put("/{teacher_id}")
 async def update_a_teacher(teacher_id: int, name: Optional[str] = None, description: Optional[str] = None, 
         user: User = Depends(current_active_user)):
-    async with async_session() as session:
-        async with session.begin():
-            teacher_dal = TeacherDAL(session)
-            return await teacher_dal.update_teacher(teacher_id, name, description)
+    if user.is_superuser or user.teacher:
+        async with async_session() as session:
+            async with session.begin():
+                teacher_dal = TeacherDAL(session)
+                return await teacher_dal.update_teacher(teacher_id, name, description)
+    else:
+        raise HTTPException(status_code=403, detail="Only teachers and admins can access these resources")
