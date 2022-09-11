@@ -8,7 +8,7 @@ from ..data_access_layer import ReferenceLetterRequestDAL
 router = APIRouter(prefix='/api/rl_requests')
 
 # get for a student
-@router.get("/{student_id}")
+@router.get("/s/{student_id}")
 async def get_students_rl_requests(student_id: int) -> List[ReferenceLetterRequest]:
     if user.is_superuser or user.student:
         async with async_session() as session:
@@ -19,7 +19,7 @@ async def get_students_rl_requests(student_id: int) -> List[ReferenceLetterReque
         raise HTTPException(status_code=403, detail="Only students and admins can access these resources")
 
 # get pending for a teacher
-@router.get("/pending/{teacher_id}")
+@router.get("/t/pending/{teacher_id}")
 async def get_pending_for_teacher(teacher_id: int) -> List[ReferenceLetterRequest]:
     if user.is_superuser or user.teacher:
         async with async_session() as session:
@@ -31,7 +31,7 @@ async def get_pending_for_teacher(teacher_id: int) -> List[ReferenceLetterReques
 
 
 # approve a pending
-@router.put("{rl_request_id}/approve")
+@router.put("/t/{rl_request_id}/approve")
 async def approve_rl_request(rl_request_id: int, text: str):
     if user.teacher:
         async with async_session() as session:
@@ -43,7 +43,7 @@ async def approve_rl_request(rl_request_id: int, text: str):
         raise HTTPException(status_code=403, detail="Only teachers can perform these operations")
 
 # decline a pending
-@router.delete("{rl_request_id}/decline")
+@router.delete("/t/{rl_request_id}/decline")
 async def decline_rl_request(rl_request_id: int):
     if user.teacher:
         async with async_session() as session:

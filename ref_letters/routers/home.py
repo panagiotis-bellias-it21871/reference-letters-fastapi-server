@@ -8,11 +8,3 @@ router = APIRouter(prefix='/api')
 def read_root():
     return {"message": "This is a fastapi backend application that supports reference letters handling! "+
     "It is currently being used by the corresponding VueJS application."}
-
-@router.get("/authenticated-route/")
-async def authenticated_route(user: User = Depends(current_active_user)):
-    return {"message": f"Hello {user.username}!"}
-
-@router.get("/ping/")
-async def ping():
-    return {"ping": "pong!"}

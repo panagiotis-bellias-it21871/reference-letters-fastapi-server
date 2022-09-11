@@ -1,8 +1,8 @@
 from typing import List, Optional
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from .. import schemas
 from ..database import Student, async_session_maker as async_session
-from ..users import current_active_user
+from ..users import current_active_user, User
 from ..data_access_layer import StudentDAL
 
 router = APIRouter(prefix='/api/students')
