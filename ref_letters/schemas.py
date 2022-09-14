@@ -18,10 +18,11 @@ class ReferenceLetterRequest(ReferenceLettersRequestBase):
         orm_mode = True
 
 class StudentBase(BaseModel):
-    name: str
     school: str
     school_id: str
     grades_url: str
+    user_username: str
+
 
 class StudentCreate(StudentBase):
     pass

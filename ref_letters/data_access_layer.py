@@ -33,8 +33,8 @@ class StudentDAL():
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    async def create_student(self, name: str, school: str, school_id: str, grades_url: str):
-        new_student = Student(name=name, school=school, school_id=school_id, grades_url=grades_url)
+    async def create_student(self, school: str, school_id: str, grades_url: str):
+        new_student = Student(school=school, school_id=school_id, grades_url=grades_url)
         self.db_session.add(new_student)
         await self.db_session.flush()
     
@@ -46,11 +46,9 @@ class StudentDAL():
         q = await self.db_session.execute(select(Student).where(Student.id == student_id))
         return q.scalars().all()
 
-    async def update_student(self, student_id: int, name: Optional[str], school: Optional[str], school_id: Optional[str], 
+    async def update_student(self, student_id: int, school: Optional[str], school_id: Optional[str], 
             grades_url: Optional[str]):
         q = update(Student).where(Student.id == student_id)
-        if name:
-            q = q.values(name=name)
         if school:
             q = q.values(school=school)
         if school_id:

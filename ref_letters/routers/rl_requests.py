@@ -1,7 +1,7 @@
 from typing import List, Optional
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from .. import schemas
-from ..users import current_active_user
+from ..users import current_active_user, User
 from ..database import ReferenceLetterRequest, async_session_maker as async_session
 from ..data_access_layer import ReferenceLetterRequestDAL
 
@@ -9,7 +9,7 @@ router = APIRouter(prefix='/api/rl_requests')
 
 # get for a student
 @router.get("/s/{student_id}")
-async def get_students_rl_requests(student_id: int) -> List[ReferenceLetterRequest]:
+async def get_students_rl_requests(student_id: int, user: User = Depends(current_active_user)) -> List[ReferenceLetterRequest]:
     if user.is_superuser or user.student:
         async with async_session() as session:
             async with session.begin():
@@ -20,7 +20,7 @@ async def get_students_rl_requests(student_id: int) -> List[ReferenceLetterReque
 
 # get pending for a teacher
 @router.get("/t/pending/{teacher_id}")
-async def get_pending_for_teacher(teacher_id: int) -> List[ReferenceLetterRequest]:
+async def get_pending_for_teacher(teacher_id: int, user: User = Depends(current_active_user)) -> List[ReferenceLetterRequest]:
     if user.is_superuser or user.teacher:
         async with async_session() as session:
             async with session.begin():
@@ -32,7 +32,7 @@ async def get_pending_for_teacher(teacher_id: int) -> List[ReferenceLetterReques
 
 # approve a pending
 @router.put("/t/{rl_request_id}/approve")
-async def approve_rl_request(rl_request_id: int, text: str):
+async def approve_rl_request(rl_request_id: int, text: str, user: User = Depends(current_active_user)):
     if user.teacher:
         async with async_session() as session:
             async with session.begin():
@@ -44,7 +44,7 @@ async def approve_rl_request(rl_request_id: int, text: str):
 
 # decline a pending
 @router.delete("/t/{rl_request_id}/decline")
-async def decline_rl_request(rl_request_id: int):
+async def decline_rl_request(rl_request_id: int, user: User = Depends(current_active_user)):
     if user.teacher:
         async with async_session() as session:
             async with session.begin():
@@ -55,7 +55,7 @@ async def decline_rl_request(rl_request_id: int):
         raise HTTPException(status_code=403, detail="Only teachers can perform these operations")
 
 @router.post("/")
-async def create_rl_request(rl_request: schemas.ReferenceLetterRequestCreate):
+async def create_rl_request(rl_request: schemas.ReferenceLetterRequestCreate, user: User = Depends(current_active_user)):
     if user.student:
         async with async_session() as session:
             async with session.begin():
@@ -66,7 +66,7 @@ async def create_rl_request(rl_request: schemas.ReferenceLetterRequestCreate):
         raise HTTPException(status_code=403, detail="Only students can perform these operations")
 
 @router.get("/")
-async def get_all_rl_requests() -> List[ReferenceLetterRequest]:
+async def get_all_rl_requests(user: User = Depends(current_active_user)) -> List[ReferenceLetterRequest, ]:
     if user.is_superuser:
         async with async_session() as session:
             async with session.begin():
