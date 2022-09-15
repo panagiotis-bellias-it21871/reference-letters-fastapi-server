@@ -12,7 +12,7 @@ from .database import User, get_user_db
 from .routers import send_email as mail
 
 SECRET = os.getenv("SECRET", default="SECRET")
-HOST = os.getenv("ORIGIN", default="http://localhost:8080")
+HOST = os.getenv("ORIGIN", default="http://localhost:8080/")
 
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 

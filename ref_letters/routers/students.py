@@ -1,5 +1,5 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from .. import schemas
 from ..database import Student, async_session_maker as async_session
 from ..users import current_active_user, User
@@ -26,8 +26,6 @@ async def get_all_students(user: User = Depends(current_active_user)) -> List[St
 
 @router.get("/{student_id}")
 async def get_a_student(student_id: int, user: User = Depends(current_active_user)) -> Student:
-    if not user:
-        raise HTTPException(status_code=403, detail="Only system users can access these resources")
     async with async_session() as session:
         async with session.begin():
             student_dal = StudentDAL(session)
