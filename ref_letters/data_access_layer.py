@@ -63,7 +63,7 @@ class ReferenceLetterRequestDAL():
 
     # get for a student
     async def get_students_rl_requests(self, student_id: int) -> List[ReferenceLetterRequest]:
-        q = await self.db.session.execute(select(ReferenceLetterRequest).where(ReferenceLetterRequest.student_id == student_id).
+        q = await self.db_session.execute(select(ReferenceLetterRequest).where(ReferenceLetterRequest.student_id == student_id).
             order_by(ReferenceLetterRequest.id))
         return q.scalars().all()
 

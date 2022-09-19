@@ -1,5 +1,5 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from .. import schemas
 from ..users import current_active_user, User
 from ..database import ReferenceLetterRequest, async_session_maker as async_session

@@ -16,13 +16,13 @@ async def create_student(student: schemas.StudentCreate):
 
 @router.get("/")
 async def get_all_students(user: User = Depends(current_active_user)) -> List[Student]:
-    if user.is_superuser:
+    #if user.is_superuser:
         async with async_session() as session:
             async with session.begin():
                 student_dal = StudentDAL(session)
                 return await student_dal.get_all_students()
-    else:
-        raise HTTPException(status_code=403, detail="Only admins can access these resources")
+    #else:
+    #    raise HTTPException(status_code=403, detail="Only admins can access these resources")
 
 @router.get("/{student_id}")
 async def get_a_student(student_id: int, user: User = Depends(current_active_user)) -> Student:
