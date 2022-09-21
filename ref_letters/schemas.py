@@ -35,8 +35,8 @@ class Student(StudentBase):
         orm_mode = True
 
 class TeacherBase(BaseModel):
-    name: str
     description: str
+    user_username: str
 
 class TeacherCreate(TeacherBase):
     pass

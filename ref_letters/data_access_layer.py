@@ -8,8 +8,8 @@ class TeacherDAL():
     def __init__(self, db_session: Session):
         self.db_session = db_session
     
-    async def create_teacher(self, name: str, description: str):
-        new_teacher = Teacher(name=name, description=description)
+    async def create_teacher(self, name: str, description: str, user_username: str):
+        new_teacher = Teacher(description=description, user_username=user_username)
         self.db_session.add(new_teacher)
         await self.db_session.flush()
     
@@ -33,8 +33,8 @@ class StudentDAL():
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    async def create_student(self, school: str, school_id: str, grades_url: str):
-        new_student = Student(school=school, school_id=school_id, grades_url=grades_url)
+    async def create_student(self, school: str, school_id: str, grades_url: str, user_username: str):
+        new_student = Student(school=school, school_id=school_id, grades_url=grades_url, user_username=user_username)
         self.db_session.add(new_student)
         await self.db_session.flush()
     
