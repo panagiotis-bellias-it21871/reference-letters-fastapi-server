@@ -8,7 +8,7 @@ class TeacherDAL():
     def __init__(self, db_session: Session):
         self.db_session = db_session
     
-    async def create_teacher(self, name: str, description: str, user_username: str):
+    async def create_teacher(self, description: str, user_username: str):
         new_teacher = Teacher(description=description, user_username=user_username)
         self.db_session.add(new_teacher)
         await self.db_session.flush()
@@ -44,6 +44,10 @@ class StudentDAL():
     
     async def get_a_student(self, student_id: int) -> Student:
         q = await self.db_session.execute(select(Student).where(Student.id == student_id))
+        return q.scalars().all()
+    
+    async def get_a_student_by_username(self, username: str) -> Student:
+        q = await self.db_session.execute(select(Student).where(Student.user_username == username))
         return q.scalars().all()
 
     async def update_student(self, student_id: int, school: Optional[str], school_id: Optional[str], 

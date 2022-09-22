@@ -13,13 +13,13 @@ spec:
         component: postgres
     spec:
       volumes:
-        - name:  pg-database-persistent-volume-storage
+        - name: pg-database-persistent-volume-storage
           persistentVolumeClaim:
             claimName: pg-pvc-claim
-        - name: pg-init-script
-          configMap:
-            name: pg-init-script
-            defaultMode: 0744
+        # - name: pg-init-script
+        #   configMap:
+        #     name: pg-init-script
+        #     defaultMode: 0744
       containers:
         - name: postgres
           image: "postgres:14"
@@ -55,6 +55,6 @@ spec:
             - name: pg-database-persistent-volume-storage
               mountPath: /var/lib/postgresql/data
               subPath: postgres
-            - name: pg-init-script
-              mountPath: /scripts
+            # - name: pg-init-script
+            #   mountPath: /scripts
           imagePullPolicy: Always
