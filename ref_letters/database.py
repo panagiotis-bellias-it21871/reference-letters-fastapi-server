@@ -23,6 +23,7 @@ async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit
 class Teacher(Base):
     __tablename__ = "teacher"
     id = Column(Integer, primary_key=True, index=True)
+    full_name = Column(String)
     description = Column(String)
     user_username = Column(String, ForeignKey("user.username"))
     user = relationship("User")
@@ -30,6 +31,7 @@ class Teacher(Base):
 class Student(Base):
     __tablename__ = "student"
     id = Column(Integer, primary_key=True, index=True)
+    full_name = Column(String)
     school = Column(String)
     school_id = Column(String)
     grades_url = Column(String)

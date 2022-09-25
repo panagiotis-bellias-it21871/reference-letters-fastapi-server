@@ -12,7 +12,7 @@ async def create_teacher(teacher: schemas.TeacherCreate):
     async with async_session() as session:
         async with session.begin():
             teacher_dal = TeacherDAL(session)
-            return await teacher_dal.create_teacher(teacher.description, teacher.user_username)
+            return await teacher_dal.create_teacher(teacher.full_name, teacher.description, teacher.user_username)
 
 @router.get("/")
 async def get_all_teachers(user: User = Depends(current_active_user)) -> List[Teacher]:

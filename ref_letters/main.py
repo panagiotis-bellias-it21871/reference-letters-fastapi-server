@@ -30,13 +30,13 @@ app.include_router(students.router,tags=["students"])
 app.include_router(teachers.router,tags=["teachers"])
 
 app.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate, requires_verification=True),
+    fastapi_users.get_users_router(UserRead, UserUpdate, requires_verification=False),
     prefix="/users",
     tags=["users"]
 )
 
 app.include_router(
-    fastapi_users.get_auth_router(auth_backend, requires_verification=True),
+    fastapi_users.get_auth_router(auth_backend, requires_verification=False),
     prefix="/auth/jwt",
     tags=["auth"]
 )

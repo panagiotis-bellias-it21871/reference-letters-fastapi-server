@@ -18,6 +18,7 @@ class ReferenceLetterRequest(ReferenceLettersRequestBase):
         orm_mode = True
 
 class StudentBase(BaseModel):
+    full_name: str
     school: str
     school_id: str
     grades_url: str
@@ -35,6 +36,7 @@ class Student(StudentBase):
         orm_mode = True
 
 class TeacherBase(BaseModel):
+    full_name: str
     description: str
     user_username: str
 

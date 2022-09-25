@@ -8,8 +8,8 @@ class TeacherDAL():
     def __init__(self, db_session: Session):
         self.db_session = db_session
     
-    async def create_teacher(self, description: str, user_username: str):
-        new_teacher = Teacher(description=description, user_username=user_username)
+    async def create_teacher(self, full_name: str, description: str, user_username: str):
+        new_teacher = Teacher(full_name=full_name, description=description, user_username=user_username)
         self.db_session.add(new_teacher)
         await self.db_session.flush()
     
@@ -33,8 +33,8 @@ class StudentDAL():
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    async def create_student(self, school: str, school_id: str, grades_url: str, user_username: str):
-        new_student = Student(school=school, school_id=school_id, grades_url=grades_url, user_username=user_username)
+    async def create_student(self, full_name: str, school: str, school_id: str, grades_url: str, user_username: str):
+        new_student = Student(full_name=full_name, school=school, school_id=school_id, grades_url=grades_url, user_username=user_username)
         self.db_session.add(new_student)
         await self.db_session.flush()
     
@@ -73,7 +73,7 @@ class ReferenceLetterRequestDAL():
 
     # get pending for a teacher
     async def get_pending_for_teacher(self, teacher_id: int) -> List[ReferenceLetterRequest]:
-        q = await self.db.session.execute(
+        q = await self.db_session.execute(
             select(ReferenceLetterRequest).where(ReferenceLetterRequest.teacher_id == teacher_id and 
                 ReferenceLetterRequest.status == "pending").
             order_by(ReferenceLetterRequest.id)

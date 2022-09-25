@@ -12,7 +12,7 @@ async def create_student(student: schemas.StudentCreate):
     async with async_session() as session:
         async with session.begin():
             student_dal = StudentDAL(session)
-            return await student_dal.create_student(student.school, student.school_id, student.grades_url, student.user_username)
+            return await student_dal.create_student(student.full_name, student.school, student.school_id, student.grades_url, student.user_username)
 
 @router.get("/")
 async def get_all_students(#user: User = Depends(current_active_user)
