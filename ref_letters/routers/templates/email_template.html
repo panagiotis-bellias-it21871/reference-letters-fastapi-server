@@ -6,6 +6,11 @@
         <p>
             Click <a href="{{host}}verify_token/{{token}}">here</a> to confirm your email address.
         </p>
+        {% else %}
+        <h1>{{title}}</h1>
+        <p>
+            {{message}}
+        </p>
         {% endif %}
     </body>
 </html>

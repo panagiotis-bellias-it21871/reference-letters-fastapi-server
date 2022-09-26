@@ -4,6 +4,8 @@ from .. import schemas
 from ..users import current_active_user, User
 from ..database import ReferenceLetterRequest, async_session_maker as async_session
 from ..data_access_layer import ReferenceLetterRequestDAL
+from . import send_email
+from . import students
 
 router = APIRouter(prefix='/api/rl_requests')
 
@@ -29,15 +31,39 @@ async def get_pending_for_teacher(teacher_id: int, user: User = Depends(current_
     else:
         raise HTTPException(status_code=403, detail="Only teachers and admins can access these resources")
 
+'''
+async def retrieveMailAddress(rl_request_id: int):
+    email_address = ""
+    # get rl_request and its student id
+    rl_request = get_a_rl_request(rl_request_id)
+    print("RL Request: ", rl_request)
+    student_id = rl_request.student_id
+    # get student by student id and its email
+    email_address = students.get_a_student(student_id)
+    print("Email address: ", email_address)
+
+    return email_address
+'''
 
 # approve a pending
 @router.put("/t/{rl_request_id}/approve")
 async def approve_rl_request(rl_request_id: int, text: str, user: User = Depends(current_active_user)):
     if user.teacher:
+        #email_address = await retrieveMailAddress(rl_request_id)
         async with async_session() as session:
             async with session.begin():
                 rl_request_dal = ReferenceLetterRequestDAL(session)
-                # send mail here
+                #print(email_address)
+                email = {
+                    "subject": "Approved Reference Letter Request",
+                    # "email": [str(email_address)],
+                    "email": ["belliaspan@gmail.com"],
+                    "body": {
+                        "title": "Approved Reference Letter Request",
+                        "message": f"Your reference letter request with id: {rl_request_id} has been approved by the related teacher."
+                    }
+                }
+                print(await send_email.send_email_async(email))
                 return await rl_request_dal.approve_rl_request(rl_request_id, text)
     else:
         raise HTTPException(status_code=403, detail="Only teachers can perform these operations")
@@ -46,10 +72,19 @@ async def approve_rl_request(rl_request_id: int, text: str, user: User = Depends
 @router.delete("/t/{rl_request_id}/decline")
 async def decline_rl_request(rl_request_id: int, user: User = Depends(current_active_user)):
     if user.teacher:
+        #email_address = retrieveMailAddress(rl_request_id)
         async with async_session() as session:
             async with session.begin():
                 rl_request_dal = ReferenceLetterRequestDAL(session)
-                # send mail here
+                email = {
+                    "subject": "Declined Reference Letter Request",
+                    "email": ["belliaspan@gmail.com"],
+                    "body": {
+                        "title": "Declined Reference Letter Request",
+                        "message": f"Your reference letter request with id: {rl_request_id} has been declined by the related teacher."
+                    }
+                }
+                print(await send_email.send_email_async(email))
                 return await rl_request_dal.decline_rl_request(rl_request_id)
     else:
         raise HTTPException(status_code=403, detail="Only teachers can perform these operations")
@@ -67,13 +102,13 @@ async def create_rl_request(rl_request: schemas.ReferenceLetterRequestCreate, us
 
 @router.get("/")
 async def get_all_rl_requests(user: User = Depends(current_active_user)) -> List[ReferenceLetterRequest, ]:
-    if user.is_superuser:
+    #if user.is_superuser:
         async with async_session() as session:
             async with session.begin():
                 rl_request_dal = ReferenceLetterRequestDAL(session)
                 return await rl_request_dal.get_all_rl_requests()
-    else:
-        raise HTTPException(status_code=403, detail="Only admins can access these resources")
+    #else:
+    #    raise HTTPException(status_code=403, detail="Only admins can access these resources")
 # stopped here with endpoint protection
 @router.get("/{rl_request_id}")
 async def get_a_rl_request(rl_request_id: int) -> ReferenceLetterRequest:
