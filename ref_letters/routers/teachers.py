@@ -24,6 +24,13 @@ async def get_all_teachers(user: User = Depends(current_active_user)) -> List[Te
     else:
         raise HTTPException(status_code=403, detail="Only students and admins can access these resources")
 
+@router.get("/u/{username}")
+async def get_a_teacher_by_username(username: str, user: User = Depends(current_active_user)) -> Teacher:
+    async with async_session() as session:
+        async with session.begin():
+            teacher_dal = TeacherDAL(session)
+            return await teacher_dal.get_a_teacher_by_username(username)
+
 @router.get("/{teacher_id}")
 async def get_a_teacher(teacher_id: int, user: User = Depends(current_active_user)) -> Teacher:
     if not user:

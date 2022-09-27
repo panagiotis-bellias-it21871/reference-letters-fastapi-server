@@ -19,7 +19,11 @@ class TeacherDAL():
     
     async def get_a_teacher(self, teacher_id: int) -> Teacher:
         q = await self.db_session.execute(select(Teacher).where(Teacher.id == teacher_id))
-        return q.scalars().all()
+        return q.scalars().first()
+    
+    async def get_a_teacher_by_username(self, username: str) -> Teacher:
+        q = await self.db_session.execute(select(Teacher).where(Teacher.user_username == username))
+        return q.scalars().first()
 
     async def update_teacher(self, teacher_id: int, name: Optional[str], description: Optional[str]):
         q = update(Teacher).where(Teacher.id == teacher_id)
@@ -44,11 +48,11 @@ class StudentDAL():
     
     async def get_a_student(self, student_id: int) -> Student:
         q = await self.db_session.execute(select(Student).where(Student.id == student_id))
-        return q.scalars().all()
+        return q.scalars().first()
     
     async def get_a_student_by_username(self, username: str) -> Student:
         q = await self.db_session.execute(select(Student).where(Student.user_username == username))
-        return q.scalars().all()
+        return q.scalars().first()
 
     async def update_student(self, student_id: int, school: Optional[str], school_id: Optional[str], 
             grades_url: Optional[str]):
@@ -100,6 +104,7 @@ class ReferenceLetterRequestDAL():
             carrier_email=carrier_email, status=status, text=text)
         self.db_session.add(new_rl_request)
         await self.db_session.flush()
+        return await self.get_students_rl_requests(student_id)
     
     async def get_all_rl_requests(self) -> List[ReferenceLetterRequest]:
         q = await self.db_session.execute(select(ReferenceLetterRequest).order_by(ReferenceLetterRequest.id))
@@ -107,7 +112,7 @@ class ReferenceLetterRequestDAL():
     
     async def get_a_rl_request(self, rl_request_id: int) -> ReferenceLetterRequest:
         q = await self.db_session.execute(select(ReferenceLetterRequest).where(ReferenceLetterRequest.id == rl_request_id))
-        return q.scalars().all()
+        return q.scalars().first()
 
     async def update_rl_request(self, rl_request_id: int, teacher_id: Optional[int], student_id: Optional[int], 
             carrier_name: Optional[str], carrier_email: Optional[str], status: Optional[str], text: Optional[str]):
