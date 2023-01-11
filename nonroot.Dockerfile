@@ -14,8 +14,6 @@ ENV PATH=$PATH:/usr/data/.local/bin
 # Copy the file with the requirements
 COPY ./requirements.txt ./
 
-COPY ./templates ./templates
-
 # Copy main.py file
 COPY ./ref_letters app
 
